@@ -24,7 +24,7 @@ public class Country {
 	}
 	
 	public int getArmyCount(){
-		return getArmyCount();
+		return armyCount;
 	}
 	
 	public Player getOwner(){
