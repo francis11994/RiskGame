@@ -1,1 +1,1 @@
-cp -r ../../../workspace/Risk/* .
+cp -r ~/workspace/Risk/* .
