@@ -30,6 +30,10 @@ public class Country {
 	public Player getOwner(){
 		return owner;
 	}
+	//Chen: add a new method here
+	public void setOwner(Player player){
+		owner = player;
+	}
 
 	public void attack(Country defender) {
 		
