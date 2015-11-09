@@ -1,12 +1,27 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RiskMap {
 
-	public static ArrayList<Country> getAllCountry() {
+	ArrayList<Country> map;
+	
+	public RiskMap(){
+		
+	}
+	
+	public void addCountry(Country c){
+		map.add(c);
+	}
+	
+	public boolean removeCountry(Country c){
+		return map.remove(c);
+	}
+	
+	public ArrayList<Country> getAllCountry() {
 		// TODO Auto-generated method stub
-		return null;
+		return map;
 	}
 
 }

@@ -39,6 +39,9 @@ public class Player {
 	//we only can hold less than 5 cards in each players deck
 	//if number of cards are less than 5 in player, we can add card (true)
 	//However, if we have 5 cards, then automatically turn in 3 cards showing player cards (false)
+	//TODO
+	//Dan: the player needs to select what cards they want to remove when cards > 5 
+	
 	public boolean addCards(Card c){
 		if(cardsHeld.size() < 5){
 			cardsHeld.add(c);

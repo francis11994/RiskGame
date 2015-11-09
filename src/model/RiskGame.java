@@ -13,22 +13,22 @@ public class RiskGame {
 
 	
 public RiskGame(){
-	currentPlayer=null;
-	currentCountry=null;
-	players=new ArrayList<Player>();
-	maps=new RiskMap();
+	currentPlayer = null;
+	currentCountry = null;
+	players = new ArrayList<Player>();
+	maps = new RiskMap();
 	
 }
 
 public void addPlayer(String username){
-	currentPlayer=new Player(username);
+	currentPlayer = new Player(username);
 	players.add(currentPlayer);
 }
 
 //Player class should add a new constructor Player() to add bot into Players
 //also a boolean method IsBot() to check whether this player is bot
 public void addBot(){
-	currentPlayer=new Player();
+	currentPlayer = new Player();
 	players.add(currentPlayer);
 }
 
@@ -37,10 +37,10 @@ public void addBot(){
 //Player class need a method to return the number of the countries it owns. (getNumberOfCountries()
 // and setNumberOfCountry())
 public void randomSetCountry(){
-	ArrayList<Country> allCountries=RiskMap.getAllCountry();
-	int index=0;
-	Random random=new Random();
-	while(allCountries!=null){
+	ArrayList<Country> allCountries = maps.getAllCountry();
+	int index = 0;
+	Random random = new Random();
+	while(allCountries != null){
 		currentCountry=allCountries.remove(random.nextInt(allCountries.size()));
 		 players.get(index).addCountry(currentCountry);
 		index++;
@@ -71,10 +71,10 @@ public boolean IsLost(){
 	return currentPlayer.getCountryNumber()==0;
 }
 public void restart(){
-	currentPlayer=null;
-	currentCountry=null;
-	players=new ArrayList<Player>();
-	maps=new RiskMap();
+	currentPlayer = null;
+	currentCountry = null;
+	players = new ArrayList<Player>();
+	maps = new RiskMap();
 }
 public void AIPlayer(){
 	
