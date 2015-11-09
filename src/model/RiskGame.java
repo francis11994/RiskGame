@@ -57,7 +57,9 @@ public void atactCountry(Country attecter, Country defenser){
 	
 }
 public void turnInCard(Card card1, Card card2,Card card3){
-	
+	currentPlayer.removeCard(card1);
+	currentPlayer.removeCard(card2);
+	currentPlayer.removeCard(card3);
 }
 public int getUnit(){
 	return currentPlayer.getCountryNumber();

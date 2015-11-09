@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
+
 	private List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
@@ -34,19 +35,33 @@ public class Player {
 		return cardsHeld;
 	}
 	
-	public void addCards(Card c){
-		cardsHeld.add(c);
+	//Fixing from Francis
+	//we only can hold less than 5 cards in each players deck
+	//if number of cards are less than 5 in player, we can add card (true)
+	//However, if we have 5 cards, then automatically turn in 3 cards showing player cards (false)
+	public boolean addCards(Card c){
+		if(cardsHeld.size() < 5){
+			cardsHeld.add(c);
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public boolean isBot(){
 		return isBot;
 	}
-	//Chen: addCountry(), getCountryNumber(),
+
 	public void addCountry(Country country){
 		countries.add(country);
 	}
 	
 	public int getCountryNumber(){
 		return countries.size();
+	}
+	
+	//Francis: remove cards when we turn in
+	public void removeCard(Card cards){
+		cardsHeld.remove(cards);
 	}
 }
