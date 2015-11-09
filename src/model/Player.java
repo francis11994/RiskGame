@@ -21,5 +21,12 @@ public class Player {
 		from.move(to, amount);
 		
 	}
+	public List<Card> getCards(){
+		return cardsHeld;
+	}
+	
+	public void addCards(Card c){
+		cardsHeld.add(c);
+	}
 
 }

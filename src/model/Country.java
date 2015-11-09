@@ -5,6 +5,7 @@ import java.util.List;
 public class Country {
 	int armyCount;
 	Player owner;
+	List <Country> negibhours; //spelling needs to be fixed
 	
 	public Country(){
 		
@@ -12,6 +13,10 @@ public class Country {
 	
 	public List<Country> getNegibors(){
 		return null;
+	}
+	
+	public void addNegibor(Country c){
+		this.negibhours.add(c);
 	}
 	
 	public void addArmys(int n){
