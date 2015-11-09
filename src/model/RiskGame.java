@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -6,7 +8,7 @@ import java.util.Random;
 public class RiskGame {
 	private static Player currentPlayer;
 	private static List<Player> players;
-	private Maps maps;
+	private RiskMap maps;
 	private Country currentCountry;
 
 	
@@ -14,7 +16,7 @@ public RiskGame(){
 	currentPlayer=null;
 	currentCountry=null;
 	players=new ArrayList<Player>();
-	maps=new Maps();
+	maps=new RiskMap();
 	
 }
 
@@ -35,7 +37,7 @@ public void addBot(){
 //Player class need a method to return the number of the countries it owns. (getNumberOfCountries()
 // and setNumberOfCountry())
 public void randomSetCountry(){
-	ArrayList<Country> allCountries=Maps.getAllCountry();
+	ArrayList<Country> allCountries=RiskMap.getAllCountry();
 	int index=0;
 	Random random=new Random();
 	while(allCountries!=null){
@@ -70,7 +72,7 @@ public void restart(){
 	currentPlayer=null;
 	currentCountry=null;
 	players=new ArrayList<Player>();
-	maps=new Maps();
+	maps=new RiskMap();
 }
 public void AIPlayer(){
 	

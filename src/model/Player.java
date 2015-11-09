@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-	List <Country> countries;
-	List <Card> cardsHeld;
+	private List <Country> countries;
+	private List <Card> cardsHeld;
+	private String username;
+	private boolean isBot;
 	
-	public Player() {
+	public Player(String username) {
 		countries = new ArrayList<Country>();
+		this.username = username;
+		isBot = false;
+	}
+	
+	public Player (){
+		isBot = true;
 	}
 	public void placeTroop(Country c, int amount){
 		c.addArmys(amount);
@@ -28,6 +36,10 @@ public class Player {
 	
 	public void addCards(Card c){
 		cardsHeld.add(c);
+	}
+	
+	public boolean isBot(){
+		return isBot;
 	}
 	//Chen: addCountry(), getCountryNumber(),
 	public void addCountry(Country country){
