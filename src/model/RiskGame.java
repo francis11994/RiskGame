@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import model.Card.CardType;
+
 
 public class RiskGame {
 	private static Player currentPlayer;
@@ -17,7 +19,6 @@ public RiskGame(){
 	currentCountry = null;
 	players = new ArrayList<Player>();
 	maps = new RiskMap();
-	
 }
 
 public void addPlayer(String username){

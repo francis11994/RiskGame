@@ -41,7 +41,11 @@ public class Country {
 	}
 
 	public void attack(Country defender) {
-
+		if(!neighbours.contains(defender)){
+			return;
+		}
+		
+		//dice roll
 	}
 
 	public void move(Country to, int amount) {

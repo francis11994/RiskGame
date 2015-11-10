@@ -1,11 +1,12 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RiskMap {
 
 	private ArrayList<Country> map;
+	
+	
 	private Country ICELAND = new Country("Iceland");
 	private Country SCANDINAVIA = new Country("Scandinavia");
 	private Country GREATBRITAIN = new Country("Great Britain");
@@ -58,6 +59,49 @@ public class RiskMap {
 
 	
 	public RiskMap(){
+		map.add(ICELAND);
+		map.add(SCANDINAVIA);
+		map.add(GREATBRITAIN);
+		map.add(NORTHERNEUROPE);
+		map.add(WESTERNEUROPE);
+		map.add(SOUTHERNEUROPE);
+		map.add(ALASKA);
+		map.add(NORTHWESTTERRITORY);
+		map.add(GREENLAND);
+		map.add(ALBERTA);
+		map.add(ONTARIO);
+		map.add(EASTERNCANADA);
+		map.add(WESTERNUNITEDSTATES);
+		map.add(EASTERNUNITEDSTATES);
+		map.add(CENTRALAMERICA);
+		map.add(VENEZUELA);
+		map.add(BRAZIL);
+		map.add(PERU);
+		map.add(ARGENTINA);
+		map.add(EGYPT);
+		map.add(NORTHAFRICA);
+		map.add(EASTAFRICA);
+		map.add(CENTRALAFRICA);
+		map.add(SOUTHAFRICA);
+		map.add(MADAGASCAR);
+		map.add(RUSSIA);
+		map.add(URAL);
+		map.add(SIBERIA);
+		map.add(YAKUTSK);
+		map.add(KAMCHATKA);
+		map.add(AFGHANISTAN);
+		map.add(MIDDLEEAST);
+		map.add(INDIA);
+		map.add(CHINA);
+		map.add(SIAM);
+		map.add(IRKUTSK);
+		map.add(MONGOLIA);
+		map.add(JAPAN);
+		map.add(INDONESIA);
+		map.add(EASTERNAUSTRALIA);
+		map.add(WESTERNAUSTRALIA);
+		map.add(NEWGUINEA);
+		
 		uniteTheHood();
 	}
 	
