@@ -8,7 +8,7 @@ public class Country {
 
 	int armyCount;
 	private Player owner;
-	private List<Country> negibhours; // spelling needs to be fixed
+	private List<Country> neighbours;
 	String name;
 
 	public Country(String c) {
@@ -19,8 +19,8 @@ public class Country {
 		return null;
 	}
 
-	public void addNegibor(Country c) {
-		this.negibhours.add(c);
+	public void addNeighbour(Country c) {
+		this.neighbours.add(c);
 	}
 
 	public void addArmys(int n) {

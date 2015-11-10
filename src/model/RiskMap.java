@@ -58,7 +58,7 @@ public class RiskMap {
 
 	
 	public RiskMap(){
-
+		uniteTheHood();
 	}
 	
 	public void addCountry(Country c){
@@ -73,5 +73,91 @@ public class RiskMap {
 		// TODO Auto-generated method stub
 		return map;
 	}
+	
+    private void uniteTheHood() {
+        ALASKA.addNeighbour(NORTHWESTTERRITORY);
+        ALASKA.addNeighbour(KAMCHATKA);
+        ALASKA.addNeighbour(ALBERTA);
+        NORTHWESTTERRITORY.addNeighbour(GREENLAND);
+        NORTHWESTTERRITORY.addNeighbour(ALBERTA);
+        NORTHWESTTERRITORY.addNeighbour(ONTARIO);
+        GREENLAND.addNeighbour(ONTARIO);
+        GREENLAND.addNeighbour(EASTERNCANADA);
+        GREENLAND.addNeighbour(ICELAND);
+        ALBERTA.addNeighbour(ONTARIO);
+        ALBERTA.addNeighbour(WESTERNUNITEDSTATES);
+        ONTARIO.addNeighbour(EASTERNCANADA);
+        ONTARIO.addNeighbour(WESTERNUNITEDSTATES);
+        ONTARIO.addNeighbour(EASTERNUNITEDSTATES);
+        EASTERNCANADA.addNeighbour(EASTERNUNITEDSTATES);
+        WESTERNUNITEDSTATES.addNeighbour(EASTERNUNITEDSTATES);
+        WESTERNUNITEDSTATES.addNeighbour(CENTRALAMERICA);
+        EASTERNUNITEDSTATES.addNeighbour(CENTRALAMERICA);
+        CENTRALAMERICA.addNeighbour(VENEZUELA);
+        VENEZUELA.addNeighbour(PERU);
+        VENEZUELA.addNeighbour(BRAZIL);
+        PERU.addNeighbour(BRAZIL);
+        PERU.addNeighbour(ARGENTINA);
+        BRAZIL.addNeighbour(ARGENTINA);
+        BRAZIL.addNeighbour(NORTHAFRICA);
+        ICELAND.addNeighbour(SCANDINAVIA);
+        ICELAND.addNeighbour(GREATBRITAIN);
+        SCANDINAVIA.addNeighbour(RUSSIA);
+        SCANDINAVIA.addNeighbour(GREATBRITAIN);
+        SCANDINAVIA.addNeighbour(NORTHERNEUROPE);
+        GREATBRITAIN.addNeighbour(NORTHERNEUROPE);
+        GREATBRITAIN.addNeighbour(WESTERNEUROPE);
+        NORTHERNEUROPE.addNeighbour(SOUTHERNEUROPE);
+        NORTHERNEUROPE.addNeighbour(RUSSIA);
+        NORTHERNEUROPE.addNeighbour(WESTERNEUROPE);
+        WESTERNEUROPE.addNeighbour(SOUTHERNEUROPE);
+        WESTERNEUROPE.addNeighbour(NORTHAFRICA);
+        SOUTHERNEUROPE.addNeighbour(MIDDLEEAST);
+        SOUTHERNEUROPE.addNeighbour(RUSSIA);
+        SOUTHERNEUROPE.addNeighbour(NORTHAFRICA);
+        SOUTHERNEUROPE.addNeighbour(EGYPT);
+        NORTHAFRICA.addNeighbour(EGYPT);
+        NORTHAFRICA.addNeighbour(EASTAFRICA);
+        NORTHAFRICA.addNeighbour(CENTRALAFRICA);
+        EGYPT.addNeighbour(MIDDLEEAST);
+        EGYPT.addNeighbour(EASTAFRICA);
+        EASTAFRICA.addNeighbour(CENTRALAFRICA);
+        EASTAFRICA.addNeighbour(SOUTHAFRICA);
+        EASTAFRICA.addNeighbour(MADAGASCAR);
+        CENTRALAFRICA.addNeighbour(SOUTHAFRICA);
+        SOUTHAFRICA.addNeighbour(MADAGASCAR);
+        RUSSIA.addNeighbour(URAL);
+        RUSSIA.addNeighbour(AFGHANISTAN);
+        RUSSIA.addNeighbour(MIDDLEEAST);
+        URAL.addNeighbour(SIBERIA);
+        URAL.addNeighbour(AFGHANISTAN);
+        URAL.addNeighbour(CHINA);
+        SIBERIA.addNeighbour(YAKUTSK);
+        SIBERIA.addNeighbour(IRKUTSK);
+        SIBERIA.addNeighbour(MONGOLIA);
+        SIBERIA.addNeighbour(CHINA);
+        YAKUTSK.addNeighbour(KAMCHATKA);
+        YAKUTSK.addNeighbour(IRKUTSK);
+        KAMCHATKA.addNeighbour(JAPAN);
+        KAMCHATKA.addNeighbour(MONGOLIA);
+        IRKUTSK.addNeighbour(KAMCHATKA);
+        IRKUTSK.addNeighbour(MONGOLIA);
+        MONGOLIA.addNeighbour(JAPAN);
+        MONGOLIA.addNeighbour(CHINA);
+        AFGHANISTAN.addNeighbour(CHINA);
+        AFGHANISTAN.addNeighbour(INDIA);
+        AFGHANISTAN.addNeighbour(MIDDLEEAST);
+        CHINA.addNeighbour(INDIA);
+        CHINA.addNeighbour(SIAM);
+        MIDDLEEAST.addNeighbour(INDIA);
+        MIDDLEEAST.addNeighbour(EASTAFRICA);
+        INDIA.addNeighbour(SIAM);
+        SIAM.addNeighbour(INDONESIA);
+        INDONESIA.addNeighbour(NEWGUINEA);
+        INDONESIA.addNeighbour(WESTERNAUSTRALIA);
+        NEWGUINEA.addNeighbour(EASTERNAUSTRALIA);
+        WESTERNAUSTRALIA.addNeighbour(EASTERNAUSTRALIA);
+        WESTERNAUSTRALIA.addNeighbour(NEWGUINEA);
+    }
 
 }
