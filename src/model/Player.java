@@ -8,14 +8,13 @@ public class Player {
 	private List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
-	private boolean isBot;
 	
 	public Player(String username) {
 		countries = new ArrayList<Country>();
 		this.username = username;
-		isBot = false;
 	}
 	
+<<<<<<< HEAD
 	public Player (){
 		isBot = true;
 	}
@@ -27,6 +26,13 @@ public class Player {
 		
 		
 	}
+=======
+	//Chen:
+	public void removeCountry(Country a){
+		countries.remove(a);
+	}
+	
+>>>>>>> 6d764016166c14bc898015e5ff0fde548e2d0361
 	public List<Card> getCards(){
 		return cardsHeld;
 	}
@@ -37,7 +43,11 @@ public class Player {
 	//However, if we have 5 cards, then automatically turn in 3 cards showing player cards (false)
 	//TODO
 	//Dan: the player needs to select what cards they want to remove when cards > 5 
+<<<<<<< HEAD
 	//
+=======
+	
+>>>>>>> 6d764016166c14bc898015e5ff0fde548e2d0361
 	public boolean addCards(Card c){
 		if(cardsHeld.size() < 5){
 			cardsHeld.add(c);
