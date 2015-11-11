@@ -6,7 +6,6 @@ public class RiskMap {
 
 	private ArrayList<Country> map;
 	
-	
 	private Country ICELAND = new Country("Iceland");
 	private Country SCANDINAVIA = new Country("Scandinavia");
 	private Country GREATBRITAIN = new Country("Great Britain");

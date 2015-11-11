@@ -1,6 +1,5 @@
 package model;
 
-<<<<<<< HEAD
 import java.util.Random;
 
 public class Dice {
@@ -23,11 +22,4 @@ public class Dice {
 			return false; //win defenser
 		}
 	}
-	
-=======
-public class Dice {
-	public Dice(){
-		
-	}
->>>>>>> 6d764016166c14bc898015e5ff0fde548e2d0361
 }

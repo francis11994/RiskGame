@@ -1,3 +1,4 @@
+
 package model;
 //update
 public class Card {
