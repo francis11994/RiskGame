@@ -1,6 +1,6 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Country {
@@ -13,10 +13,14 @@ public class Country {
 
 	public Country(String c) {
 		this.name = c;
+		//Chen:
+		neighbours = new ArrayList<Country>();
+		armyCount = 0;
 	}
 
 	public List<Country> getNegibors() {
-		return null;
+		//Chen: 
+		return neighbours;
 	}
 
 	public void addNeighbour(Country c) {
@@ -26,37 +30,22 @@ public class Country {
 	public void addArmys(int n) {
 		armyCount += n;
 	}
+	
+	public void removeArmys(int n){
+		armyCount -= n;
+	}
 
 	public int getArmyCount() {
 		return armyCount;
+	}
+
+	public void setOwner(Player player) {
+		owner = player;
 	}
 
 	public Player getOwner() {
 		return owner;
 	}
 
-	// Chen: add a new method here
-	public void setOwner(Player player) {
-		owner = player;
-	}
-
-	public void attack(Country defender) {
-		if(!neighbours.contains(defender)){
-			return;
-		}
-		
-		//dice roll
-	}
-
-	public void move(Country to, int amount) {
-		to.addArmys(amount);
-		this.removeArmys(amount);
-
-	}
-
-	private void removeArmys(int amount) {
-		this.armyCount -= amount;
-
-	}
-
+	
 }
