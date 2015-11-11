@@ -8,13 +8,14 @@ public class Player {
 	private List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
-	
+	private int cardSubmission;
 	public Player(String username) {
 		countries = new ArrayList<Country>();
+		cardsHeld = new ArrayList<Card>();
 		this.username = username;
+		cardSubmission = 0;
 	}
 	
-	//Chen:
 	public void removeCountry(Country a){
 		countries.remove(a);
 	}
@@ -23,12 +24,6 @@ public class Player {
 		return cardsHeld;
 	}
 	
-	//Fixing from Francis
-	//we only can hold less than 5 cards in each players deck
-	//if number of cards are less than 5 in player, we can add card (true)
-	//However, if we have 5 cards, then automatically turn in 3 cards showing player cards (false)
-	//TODO
-	//Dan: the player needs to select what cards they want to remove when cards > 5 
 	
 	public boolean addCards(Card c){
 		if(cardsHeld.size() < 5){
@@ -38,21 +33,32 @@ public class Player {
 			return false;
 		}
 	}
-	
-	public boolean isBot(){
-		return isBot;
-	}
 
 	public void addCountry(Country country){
 		countries.add(country);
 	}
 	
-	public int getCountryNumber(){
+	public int getCountrySize(){
 		return countries.size();
 	}
 	
 	//Francis: remove cards when we turn in
-	public void removeCard(Card cards){
-		cardsHeld.remove(cards);
+	public void submitCard(Card card1, Card card2, Card card3){
+		cardsHeld.remove(card1);
+		cardsHeld.remove(card2);
+		cardsHeld.remove(card3);
+		cardSubmission += 1;
+	}
+	
+	public int getUnit(){
+		return CardUnit() + CountryUnit();
+	}
+	
+	private int CardUnit(){
+		return cardSubmission * 3;
+		}
+		
+	private int CountryUnit(){
+		return getCountrySize();
 	}
 }
