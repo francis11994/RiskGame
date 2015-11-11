@@ -50,12 +50,12 @@ public class RiskMap {
 	private Country WESTERNAUSTRALIA = new Country("Western Australia");
 	private Country NEWGUINEA = new Country("New Guinea");
 	
-	private ArrayList asia;
-	private ArrayList africa;
-	private ArrayList australia;
-	private ArrayList sorthAmerica;
-	private ArrayList northAmerica;
-	private ArrayList europe;
+	private ArrayList<Country> asia;
+	private ArrayList<Country> africa;
+	private ArrayList<Country> australia;
+	private ArrayList<Country> sorthAmerica;
+	private ArrayList<Country> northAmerica;
+	private ArrayList<Country> europe;
 
 	
 	public RiskMap(){
