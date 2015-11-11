@@ -8,29 +8,17 @@ public class Player {
 	private List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
-	private boolean isBot;
 	
 	public Player(String username) {
 		countries = new ArrayList<Country>();
 		this.username = username;
-		isBot = false;
 	}
 	
-	public Player (){
-		isBot = true;
-	}
-	public void placeTroop(Country c, int amount){
-		c.addArmys(amount);
+	//Chen:
+	public void removeCountry(Country a){
+		countries.remove(a);
 	}
 	
-	public void attack(Country attacker, Country defender){
-		attacker.attack(defender);
-	}
-	
-	public void moveTroops(Country to, Country from, int amount){
-		from.move(to, amount);
-		
-	}
 	public List<Card> getCards(){
 		return cardsHeld;
 	}
