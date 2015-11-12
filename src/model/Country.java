@@ -1,4 +1,3 @@
-
 package model;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ public class Country {
 	
 
 	int armyCount;
-	private Player owner;
 	private List<Country> neighbours;
 	String name;
 
@@ -17,7 +15,7 @@ public class Country {
 		this.name = c;
 		//Chen:
 		neighbours = new ArrayList<Country>();
-		armyCount = 0;
+		armyCount = 1;
 	}
 
 	public List<Country> getNegibors() {
@@ -40,14 +38,5 @@ public class Country {
 	public int getArmyCount() {
 		return armyCount;
 	}
-
-	public void setOwner(Player player) {
-		owner = player;
-	}
-
-	public Player getOwner() {
-		return owner;
-	}
-
 	
 }

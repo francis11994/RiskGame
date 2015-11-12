@@ -59,7 +59,6 @@ public class CardCollection {
 	
 	public CardCollection(){
 			cards=new ArrayList<Card>();
-			addAll();
 			shuffle();
 		}
 		
@@ -111,16 +110,15 @@ public class CardCollection {
 		}
 		
 		public void shuffle(){
-			Random random=new Random();
-			int a=0;
-			for(int i=100;i>0;i--){
-				Card card=cards.remove(random.nextInt(44));
-				cards.add(random.nextInt(44), card);
-			}
+			cards.clear();
+			addAll();
 		}
 		
-		public List<Card> getCardCollection(){
-			return cards;
+		public Card getCard(){
+			if(cards==null)
+			shuffle();
+			Random random=new Random();
+			return cards.remove(random.nextInt(cards.size()));
 		}
 		
 		

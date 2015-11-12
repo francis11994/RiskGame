@@ -10,15 +10,15 @@ import model.Card.CardType;
 public class RiskGame {
 	private static Player currentPlayer;
 	private static List<Player> players;
+	private CardCollection cards;
 	private RiskMap maps;
-	private Country currentCountry;
 
 	
 public RiskGame(){
 	currentPlayer = null;
-	currentCountry = null;
 	players = new ArrayList<Player>();
 	maps = new RiskMap();
+	cards=new CardCollection();
 }
 
 public void addPlayer(String username){
@@ -26,36 +26,39 @@ public void addPlayer(String username){
 	players.add(currentPlayer);
 }
 
-//Player class should add a new constructor Player() to add bot into Players
-//also a boolean method IsBot() to check whether this player is bot
-public void addBot(){
-	currentPlayer = new Player();
+public void addBot(int i){
+	currentPlayer = new Player(i);
 	players.add(currentPlayer);
 }
 
-
-//Maps class need a method to get all of the countries ( getAllCountry())
-//Player class need a method to return the number of the countries it owns. (getNumberOfCountries()
-// and setNumberOfCountry())
 public void randomSetCountry(){
 	ArrayList<Country> allCountries = maps.getAllCountry();
 	int index = 0;
 	Random random = new Random();
 	while(allCountries != null){
-		currentCountry=allCountries.remove(random.nextInt(allCountries.size()));
-		 players.get(index).addCountry(currentCountry);
+		Country country=allCountries.remove(random.nextInt(allCountries.size()));
+		 players.get(index).addCountry(country);
 		index++;
 		if(index>=players.size())
 			index=0;
 	}
 }
 
-public void reinforcement(Country country){
-	country.addArmys(1);
+//sdafafafawefwefwfrwgargwragrwawrwrwe
+public void SetArmy(){
+	int i=0;
+	currentPlayer=players.get(0);
+	
 }
 
-public void atactCountry(Country attecter, Country defenser){
-	
+public void atactCountry(Player Attacter, Player Defenser, Country attacter, Country defenser){
+	Dice a=new Dice();
+	Dice b = new Dice();
+	while(attacter.getArmyCount()!=0 &&defenser.getArmyCount()!=0){
+		if(a.compareDiceWith(b))
+			attacter.removeArmys(1);
+		else defenser.removeArmys(1);
+	}
 }
 public void turnInCard(Card card1, Card card2,Card card3){
 	currentPlayer.removeCard(card1);

@@ -9,11 +9,28 @@ public class Player {
 	private List <Card> cardsHeld;
 	private String username;
 	private int cardSubmission;
+	private boolean isBot;
+	//Construct Beginner AI
+	public Player(int i){
+		countries = new ArrayList<Country>();
+		cardsHeld = new ArrayList<Card>();
+		username = "Bot" + i;
+		cardSubmission = 0;
+		isBot=true;
+	}
+	//Construct gamer
 	public Player(String username) {
 		countries = new ArrayList<Country>();
 		cardsHeld = new ArrayList<Card>();
 		this.username = username;
 		cardSubmission = 0;
+		isBot=false;
+	}
+	public boolean isBot(){
+		return isBot;
+	}
+	public String getname(){
+		return username;
 	}
 	
 	public void removeCountry(Country a){
@@ -38,8 +55,8 @@ public class Player {
 		countries.add(country);
 	}
 	
-	public int getCountrySize(){
-		return countries.size();
+	public boolean isPlaying(){
+		return countries.size()!=0;
 	}
 	
 	//Francis: remove cards when we turn in
@@ -59,6 +76,6 @@ public class Player {
 		}
 		
 	private int CountryUnit(){
-		return getCountrySize();
+		return countries.size();
 	}
 }
