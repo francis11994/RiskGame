@@ -11,7 +11,6 @@ public class RiskGame {
 	private RiskMap maps;
 	private int index;
 	private int round;
-	private boolean isplaying;
 	private Random random = new Random();
 	private List<Country> countries;
 	public RiskGame() {
@@ -20,7 +19,6 @@ public class RiskGame {
 		cards = new CardCollection();
 		index = 0;
 		round = 0;
-		isplaying=false;
 	}
 
 	public void addPlayer(String username) {
@@ -34,7 +32,7 @@ public class RiskGame {
 	public void randomSetCountry() {
 		ArrayList<Country> allCountries = maps.getAllCountry();
 		Random random = new Random();
-		while (allCountries != null) {
+		while (allCountries.size() >=1) {
 			Country country = allCountries.remove(random.nextInt(allCountries.size()));
 			players.get(index).addCountry(country);
 			country.setOwner(index);

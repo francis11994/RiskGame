@@ -116,6 +116,16 @@ public class GameTest {
 		assertEquals(a.getUnit(),3);
 		assertEquals(b.getUnit(),5);
 	}
+	
+	@Test
+	public void testGame(){
+		RiskGame game=new RiskGame();
+		game.addPlayer("Chen");
+		game.addBot(1);
+		game.addBot(2);
+		game.randomSetCountry();
+		game.moveSoldier(ICELAND, ALASKA, 1);
+	}
 	private Country ICELAND = new Country("Iceland");
 	private Country SCANDINAVIA = new Country("Scandinavia");
 	private Country GREATBRITAIN = new Country("Great Britain");
