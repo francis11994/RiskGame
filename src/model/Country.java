@@ -44,4 +44,7 @@ public class Country {
 	public int getOwner(){
 		return ownerIndex;
 	}
+	public String getname(){
+		return name;
+	}
 }

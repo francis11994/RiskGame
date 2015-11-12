@@ -109,8 +109,8 @@ public class RiskMap {
 		map.add(c);
 	}
 	
-	public boolean removeCountry(Country c){
-		return map.remove(c);
+	public void removeCountry(Country c){
+		 map.remove(c);
 	}
 	
 	public ArrayList<Country> getAllCountry() {

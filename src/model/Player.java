@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Player {
 
-	private static List <Country> countries;
+	private List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
 	private int cardSubmission;
@@ -67,7 +67,10 @@ public class Player {
 	}
 	
 	public int getUnit(){
-		return CardUnit() + CountryUnit();
+		int a= CardUnit() + CountryUnit();
+		if(a<3)
+			return 3;
+		else return a;
 	}
 	
 	private int CardUnit(){

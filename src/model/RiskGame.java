@@ -109,6 +109,9 @@ public class RiskGame {
 		cards.shuffle();
 	}
 
+	//Beginner AI is here
+	//Beginner AI is here
+	//Beginner AI is here
 	public void BeginnerAI(){
 		int unit=getUnit();
 		randomSetArmy(unit);
