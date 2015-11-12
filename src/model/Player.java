@@ -59,7 +59,6 @@ public class Player {
 		return countries.size()!=0;
 	}
 	
-	//Francis: remove cards when we turn in
 	public void submitCard(Card card1, Card card2, Card card3){
 		cardsHeld.remove(card1);
 		cardsHeld.remove(card2);
