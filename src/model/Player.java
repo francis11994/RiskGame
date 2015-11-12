@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Player {
 
-	private List <Country> countries;
+	private static List <Country> countries;
 	private List <Card> cardsHeld;
 	private String username;
 	private int cardSubmission;
@@ -77,4 +77,8 @@ public class Player {
 	private int CountryUnit(){
 		return countries.size();
 	}
+	public List<Country> getCountryList(){
+		return countries;
+	}
+	
 }

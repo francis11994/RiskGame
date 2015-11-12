@@ -58,6 +58,7 @@ public class RiskMap {
 
 	
 	public RiskMap(){
+		map=new ArrayList<Country>();
 		map.add(ICELAND);
 		map.add(SCANDINAVIA);
 		map.add(GREATBRITAIN);

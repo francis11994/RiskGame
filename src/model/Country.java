@@ -10,11 +10,13 @@ public class Country {
 	int armyCount;
 	private List<Country> neighbours;
 	String name;
+	int ownerIndex;
 
 	public Country(String c) {
 		this.name = c;
 		neighbours = new ArrayList<Country>();
 		armyCount = 1;
+		ownerIndex=0;
 	}
 
 	public List<Country> getNegibors() {
@@ -36,5 +38,10 @@ public class Country {
 	public int getArmyCount() {
 		return armyCount;
 	}
-	
+	public void setOwner(int a){
+		ownerIndex=a;
+	}
+	public int getOwner(){
+		return ownerIndex;
+	}
 }

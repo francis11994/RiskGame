@@ -12,6 +12,8 @@ public class RiskGame {
 	private int index;
 	private int round;
 	private boolean isplaying;
+	private Random random = new Random();
+	private List<Country> countries;
 	public RiskGame() {
 		players = new ArrayList<Player>();
 		maps = new RiskMap();
@@ -35,6 +37,7 @@ public class RiskGame {
 		while (allCountries != null) {
 			Country country = allCountries.remove(random.nextInt(allCountries.size()));
 			players.get(index).addCountry(country);
+			country.setOwner(index);
 			index++;
 			if (index >= players.size())
 				index = 0;
@@ -48,19 +51,24 @@ public class RiskGame {
 		nextPlayer();
 	}
 
-	public void atactCountry(Player Defenser, Country attacter, Country defenser) {
+	public void atactCountry(Country attacter, Country defenser) {
 		Dice a = new Dice();
 		Dice b = new Dice();
-		while (attacter.getArmyCount() >= 1 && defenser.getArmyCount() >= 0) {
+		while (attacter.getArmyCount() >= 2 && defenser.getArmyCount() >= 0) {
 			if (a.compareDiceWith(b))
 				defenser.removeArmys(1);
 			else
 				attacter.removeArmys(1);
 		}
 		if (defenser.getArmyCount() == 0) {
-			Defenser.removeCountry(defenser);
+			players.get(defenser.getOwner()).removeCountry(defenser);
+			defenser.setOwner(index);
 			players.get(index).addCountry(defenser);
+			defenser.addArmys(1);
+			attacter.removeArmys(1);
 		}
+		attacter.addArmys(1);
+		defenser.removeArmys(1);
 	}
 
 	public void turnInCard(Card card1, Card card2, Card card3) {
@@ -68,11 +76,16 @@ public class RiskGame {
 	}
 	
 	public void nextPlayer(){
-		if(index==players.size()){
+		checkLostPlayer();
+		if(index==players.size()-1){
 			round++;
 			index=0;
 		}
-		else index++;	
+		else index++;
+		if(!IsWin()){
+			if(players.get(index).isBot())
+				BeginnerAI();
+		}
 	}
 
 	public int getUnit() {
@@ -85,6 +98,11 @@ public class RiskGame {
 		return players.size() <= 1;
 	}
 
+	public void checkLostPlayer(){
+		for(Player a: players)
+			if(!a.isPlaying())
+				players.remove(a);
+	}
 	public void restart() {
 		players = new ArrayList<Player>();
 		maps = new RiskMap();
@@ -92,6 +110,28 @@ public class RiskGame {
 	}
 
 	public void BeginnerAI(){
-		
+		int unit=getUnit();
+		randomSetArmy(unit);
+		if(round>0){
+			randomAttact();
+		}
+		nextPlayer();	
+	}
+	private void randomAttact(){
+		for(Country a: countries){
+			if(a.getArmyCount()>=3)
+			if(a.getOwner()!= a.getNegibors().get(0).getOwner())
+			atactCountry(a, a.getNegibors().get(0));
+			}
+			
+		}
+	
+	
+	private void randomSetArmy(int a){
+		countries= players.get(index).getCountryList();
+		while(a>0){
+			countries.get(random.nextInt(countries.size())).addArmys(1);
+			a--;
+		}
 	}
 }
