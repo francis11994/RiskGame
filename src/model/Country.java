@@ -13,13 +13,11 @@ public class Country {
 
 	public Country(String c) {
 		this.name = c;
-		//Chen:
 		neighbours = new ArrayList<Country>();
 		armyCount = 1;
 	}
 
 	public List<Country> getNegibors() {
-		//Chen: 
 		return neighbours;
 	}
 
