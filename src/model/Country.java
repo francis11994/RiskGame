@@ -27,11 +27,10 @@ public class Country {
 	public void addArmys(int n) {
 		armyCount += n;
 	}
-	
+
 	public void removeArmys(int n){
 		armyCount -= n;
 	}
-
 	public int getArmyCount() {
 		return armyCount;
 	}

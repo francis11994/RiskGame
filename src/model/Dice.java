@@ -1,25 +1,28 @@
+
 package model;
 
 import java.util.Random;
 
 public class Dice {
 	
-	private Random random;
 	private int number;
 	public Dice(){
-		random = new Random();
+		number=0;
 	}
 	
-	public int getRandomNumber(){
-		number = random.nextInt(6);
-		return number+1;
+	public void roll(){
+		Random random=new Random();
+		number=random.nextInt(6)+1;
 	}
 	
-	public boolean compareDiceWith(Dice defenser){
-		if(this.getRandomNumber() > defenser.getRandomNumber()){
-			return true; //win offenser
+	public int getNumber(){
+		return number;
+	}
+	public boolean isWin(Dice defenser){
+		if(number > defenser.getNumber()){
+			return true; 
 		}else{
-			return false; //win defenser
+			return false; 
 		}
 	}
 }
