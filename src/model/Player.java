@@ -3,85 +3,62 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
-
-	private List <Country> countries;
-	private List <Card> cardsHeld;
-	private String username;
-	private int cardSubmission;
-	private boolean isBot;
-	//Construct Beginner AI
-	public Player(int i){
-		countries = new ArrayList<Country>();
-		cardsHeld = new ArrayList<Card>();
-		username = "Bot" + i;
-		cardSubmission = 0;
-		isBot=true;
+public abstract class Player {
+	public enum PlayerType {
+		Human, Beginner, Intermediate, Hard
 	}
-	//Construct gamer
+
+	private List<Card> cardsHeld;
+	private String username;
+	private int cardTimes;
+	private boolean isPlaying;
+
 	public Player(String username) {
-		countries = new ArrayList<Country>();
 		cardsHeld = new ArrayList<Card>();
 		this.username = username;
-		cardSubmission = 0;
-		isBot=false;
+		cardTimes = 0;
+		isPlaying = true;
 	}
-	public boolean isBot(){
-		return isBot;
-	}
-	public String getname(){
+
+	public String getname() {
 		return username;
 	}
-	
-	public void removeCountry(Country a){
-		countries.remove(a);
+
+	public int getCardUnit() {
+		return cardTimes * 3;
 	}
-	
-	public List<Card> getCards(){
-		return cardsHeld;
-	}
-	
-	
-	public boolean addCards(Card c){
-		if(cardsHeld.size() < 5){
+
+	public boolean addCards(Card c) {
+		if (cardsHeld.size() < 5) {
 			cardsHeld.add(c);
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
-	public void addCountry(Country country){
-		countries.add(country);
+	public List<Card> getCards() {
+		return cardsHeld;
 	}
-	
-	public boolean isPlaying(){
-		return countries.size()!=0;
-	}
-	
-	public void submitCard(Card card1, Card card2, Card card3){
+
+	public void submitCard(Card card1, Card card2, Card card3) {
 		cardsHeld.remove(card1);
 		cardsHeld.remove(card2);
 		cardsHeld.remove(card3);
-		cardSubmission += 1;
+		cardTimes += 1;
 	}
-	
-	public int getUnit(){
-		int a= CardUnit() + CountryUnit();
-		if(a<3)
-			return 3;
-		else return a;
+
+	public void lost() {
+		isPlaying = false;
 	}
-	
-	private int CardUnit(){
-		return cardSubmission * 3;
-		}
-		
-	private int CountryUnit(){
-		return countries.size();
+
+	public boolean isPlaying() {
+		return isPlaying;
 	}
-	public List<Country> getCountryList(){
-		return countries;
-	}
-	
+
+	public abstract PlayerType getType();
+
+	public abstract int getUnit(List<Country> countries);
+
+	public abstract void reinforce(int unit, List<Country> countries);
 }

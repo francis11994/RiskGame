@@ -1,6 +1,5 @@
 
 package model;
-//update
 public class Card {
 	public enum CardType {
 		Soldier, Horseman, Cannon, Wild;
