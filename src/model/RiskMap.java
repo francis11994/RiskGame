@@ -107,16 +107,8 @@ public class RiskMap {
 		uniteTheHood();
 	}
 	
-	public void addCountry(Country c){
-		map.add(c);
-	}
-	
-	public void removeCountry(Country c){
-		 map.remove(c);
-	}
 	
 	public ArrayList<Country> getAllCountry() {
-		// TODO Auto-generated method stub
 		return map;
 	}
 	

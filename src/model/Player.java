@@ -1,3 +1,4 @@
+
 package model;
 
 import java.util.ArrayList;
@@ -11,9 +12,6 @@ public abstract class Player {
 	private List<Card> cardsHeld;
 	private String username;
 	private int cardTimes;
-	private Card a;
-	private Card b;
-	private Card c;
 	private boolean submitedCard=false;
 	public Player(String username) {
 		cardsHeld = new ArrayList<Card>();
@@ -21,9 +19,6 @@ public abstract class Player {
 		cardTimes = 0;
 	}
 
-	public String getname() {
-		return username;
-	}
 
 	public int getCardUnit() {
 		int unit = 0;
@@ -34,17 +29,9 @@ public abstract class Player {
 		return unit;
 	}
 
-	public boolean addCards(Card c) {
-		if (cardsHeld.size() < 5) {
+	public void addCards(Card c) {
+		if (cardsHeld.size() < 5) 
 			cardsHeld.add(c);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public List<Card> getCards() {
-		return cardsHeld;
 	}
 
 	public void submitCard(Card card1, Card card2, Card card3) {
@@ -56,8 +43,32 @@ public abstract class Player {
 	}
 
 	public void AIsubmitCard(){
-		if(cardsHeld.size()>=3)
-			submitCard(cardsHeld.get(0),cardsHeld.get(1),cardsHeld.get(2));
+		if(cardsHeld.size()==3)
+			if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(1),cardsHeld.get(2)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(1),cardsHeld.get(2));
+		if(cardsHeld.size()==4){
+			if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(1),cardsHeld.get(3)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(1),cardsHeld.get(3));
+			else if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(2),cardsHeld.get(3)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(2),cardsHeld.get(3));
+			else if(cardsHeld.get(1).CanTurnIn(cardsHeld.get(2),cardsHeld.get(3)))
+				submitCard(cardsHeld.get(1),cardsHeld.get(2),cardsHeld.get(3));
+		}
+		if(cardsHeld.size()==5){
+			if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(1),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(1),cardsHeld.get(4));
+			else if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(2),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(2),cardsHeld.get(4));
+			else if(cardsHeld.get(1).CanTurnIn(cardsHeld.get(2),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(1),cardsHeld.get(2),cardsHeld.get(4));
+			else if(cardsHeld.get(0).CanTurnIn(cardsHeld.get(3),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(0),cardsHeld.get(3),cardsHeld.get(4));
+			else if(cardsHeld.get(1).CanTurnIn(cardsHeld.get(3),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(1),cardsHeld.get(3),cardsHeld.get(4));
+			else if(cardsHeld.get(2).CanTurnIn(cardsHeld.get(3),cardsHeld.get(4)))
+				submitCard(cardsHeld.get(2),cardsHeld.get(3),cardsHeld.get(4));
+		}
+		
 	}
 	
 	

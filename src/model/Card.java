@@ -7,8 +7,7 @@ public class Card {
 	}
 	
 	private CardType type;
-	private String country;
-	
+	private String country;;
 	public Card(CardType a, String b){
 		type = a;
 		country = b;
@@ -16,10 +15,6 @@ public class Card {
 
 	public CardType getType() {
 		return type;
-	}
-
-	public String getCountry() {
-		return country;
 	}
 	
 	public boolean CanTurnIn(Card card2, Card card3){
