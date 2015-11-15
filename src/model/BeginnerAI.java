@@ -18,14 +18,14 @@ public class BeginnerAI extends Player {
 	@Override
 	public int getUnit(List<Country> countries) {
 		int card=getCardUnit();
-		int total= card + countries.size()/3;
+		int total= card + countries.size()*2/7;
 		if(total<3)
 			total=3;
 		return total;
 	}
 
 	@Override
-	public void reinforce(int unit,List<Country> countries) {
+	public void reinforce(int unit, List<Country> countries) {
 		while(unit>0){
 			index=random.nextInt(countries.size());
 			countries.get(index).addArmys(1);
@@ -33,5 +33,6 @@ public class BeginnerAI extends Player {
 		}
 		
 	}
+
 
 }

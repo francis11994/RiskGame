@@ -170,6 +170,7 @@ public class RiskMap {
         BRAZIL.addNeighbour(NORTHAFRICA);
         ARGENTINA.addNeighbour(BRAZIL);
         ARGENTINA.addNeighbour(PERU);
+   //     ARGENTINA.addNeighbour(EASTERNAUSTRALIA);
         //Europe
         ICELAND.addNeighbour(GREENLAND);
         ICELAND.addNeighbour(SCANDINAVIA);
@@ -289,6 +290,7 @@ public class RiskMap {
         WESTERNAUSTRALIA.addNeighbour(NEWGUINEA);
         EASTERNAUSTRALIA.addNeighbour(WESTERNAUSTRALIA);
         EASTERNAUSTRALIA.addNeighbour(NEWGUINEA);
+     //   EASTERNAUSTRALIA.addNeighbour(ARGENTINA);
     }
 
 }

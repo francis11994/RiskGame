@@ -38,6 +38,16 @@ public class Country {
 	public String getname(){
 		return name;
 	}
+	
+	public boolean isThreaten(List<Country> ownCountry){
+		int enemy=0;
+		for(Country neighbor:neighbours){
+			for(Country NextNeighbor:neighbor.getNegibors())
+			if(!ownCountry.contains(NextNeighbor))
+			enemy+=NextNeighbor.getArmyCount();
+		}
+		return enemy>=armyCount;
+	}
 
  
 }

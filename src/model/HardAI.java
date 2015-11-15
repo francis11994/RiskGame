@@ -18,20 +18,30 @@ public class HardAI extends Player{
 	@Override
 	public int getUnit(List<Country> countries) {
 		int card=getCardUnit();
-		int total= card + countries.size();
-		if(total<5)
-			total=5;
+		int total= card + countries.size()/2;
+		if(total<4)
+			total=4;
 		return total;
 	}
 
+
 	@Override
-	public void reinforce(int unit,List<Country> countries) {
-		while(unit>0){
-			index=random.nextInt(countries.size());
-			countries.get(index).addArmys(1);
-			unit--;	
+	public void reinforce(int unit, List<Country> countries) {
+		for (Country a : countries) {
+			while (a.isThreaten(countries) && unit > 0) {
+				a.addArmys(1);
+				unit--;
+			}
+		}
+		while (unit > 0) {
+			randomsetArmy(countries);
+			unit--;
 		}
 	}
 
-
+	private void randomsetArmy(List<Country> countries) {
+		index = random.nextInt(countries.size());
+		countries.get(index).addArmys(1);
+	}
+	
 }

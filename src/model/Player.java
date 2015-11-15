@@ -11,13 +11,14 @@ public abstract class Player {
 	private List<Card> cardsHeld;
 	private String username;
 	private int cardTimes;
-	private boolean isPlaying;
+	private Card a;
+	private Card b;
+	private Card c;
 
 	public Player(String username) {
 		cardsHeld = new ArrayList<Card>();
 		this.username = username;
 		cardTimes = 0;
-		isPlaying = true;
 	}
 
 	public String getname() {
@@ -48,17 +49,16 @@ public abstract class Player {
 		cardTimes += 1;
 	}
 
-	public void lost() {
-		isPlaying = false;
+	public void AIsubmitCard(){
+		if(cardsHeld.size()>=3)
+			submitCard(cardsHeld.get(0),cardsHeld.get(1),cardsHeld.get(2));
 	}
-
-	public boolean isPlaying() {
-		return isPlaying;
-	}
-
+	
+	
 	public abstract PlayerType getType();
 
 	public abstract int getUnit(List<Country> countries);
-
+	
 	public abstract void reinforce(int unit, List<Country> countries);
+
 }
