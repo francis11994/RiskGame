@@ -14,7 +14,7 @@ public abstract class Player {
 	private Card a;
 	private Card b;
 	private Card c;
-
+	private boolean submitedCard=false;
 	public Player(String username) {
 		cardsHeld = new ArrayList<Card>();
 		this.username = username;
@@ -26,7 +26,12 @@ public abstract class Player {
 	}
 
 	public int getCardUnit() {
-		return cardTimes * 3;
+		int unit = 0;
+		if(submitedCard){
+			unit =  cardTimes * 3;
+			submitedCard=false;
+		}
+		return unit;
 	}
 
 	public boolean addCards(Card c) {
@@ -47,6 +52,7 @@ public abstract class Player {
 		cardsHeld.remove(card2);
 		cardsHeld.remove(card3);
 		cardTimes += 1;
+		submitedCard=true;
 	}
 
 	public void AIsubmitCard(){

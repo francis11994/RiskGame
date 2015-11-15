@@ -70,7 +70,7 @@ public class RiskGame {
 
 	public boolean isPlaying() {
 		boolean isPlaying = players.size() > 1;
-		if (isPlaying && round > 700) {
+		if (isPlaying && round > 250) {
 			isPlaying = false;
 			for (int i = 0; i < AllCountry.size() - 1; i++) {
 				if (AllCountry.get(i).size() < AllCountry.get(i + 1).size()) {
@@ -172,22 +172,25 @@ public class RiskGame {
 		if (round <= 0)
 			currentPlayer.reinforce(1, country);
 		if (round > 0) {
+			Country newCountry=country.get(0);
+			currentPlayer.addCards(cards.getCard());
+			currentPlayer.AIsubmitCard();
 			int unit = currentPlayer.getUnit(country);
 			currentPlayer.reinforce(unit, country);
-			int count=0;
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
 				List<Country> neighbors = attacter.getNegibors();
 				for (int n = 0; n < neighbors.size(); n++) {
 					Country neighbor = neighbors.get(n);
-					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count<5) {
+					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) ) {
 						attact(attacter, neighbor);
-						if (!country.contains(neighbor))
+						if (country.contains(neighbor))
 							moveSolider(attacter, neighbor, attacter.getArmyCount() /2);
-						count++;
 					}
 				}
 			}
+			Country center=getLargestCountry();
+			moveSolider(center, newCountry,center.getArmyCount()-1);	
 		}
 	}
 
@@ -195,6 +198,8 @@ public class RiskGame {
 		if (round <= 0)
 			currentPlayer.reinforce(1, country);
 		if (round > 0) {
+			Country newCountry=country.get(0);
+			currentPlayer.addCards(cards.getCard());
 			currentPlayer.AIsubmitCard();
 			int unit = currentPlayer.getUnit(country);
 			currentPlayer.reinforce(unit, country);
@@ -205,14 +210,25 @@ public class RiskGame {
 					Country neighbor = neighbors.get(n);
 					if (attacter.getArmyCount() > 1 && !country.contains(neighbor)) {
 						attact(attacter, neighbor);
-						if (!country.contains(neighbor))
-							moveSolider(attacter, neighbor, attacter.getArmyCount() - 1);
+						if (country.contains(neighbor))
+							newCountry=neighbor;
+							moveSolider(attacter, neighbor, attacter.getArmyCount() /2);
 					}
 				}
 			}
+			Country center=getLargestCountry();
+			moveSolider(center, newCountry,center.getArmyCount()-1);			
 		}
 	}
 
+	private Country getLargestCountry(){
+		Country a=country.get(0);
+		for(Country temp:country){
+			if(a.getArmyCount() < temp.getArmyCount())
+				a=temp;
+		}
+			return a;
+	}
 	public void restart() {
 		players = new ArrayList<Player>();
 		cards.shuffle();

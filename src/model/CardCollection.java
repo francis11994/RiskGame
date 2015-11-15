@@ -115,7 +115,7 @@ public class CardCollection {
 		}
 		
 		public Card getCard(){
-			if(cards==null)
+			if(cards.size()==0)
 			shuffle();
 			Random random=new Random();
 			return cards.remove(random.nextInt(cards.size()));
