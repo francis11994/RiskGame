@@ -1,11 +1,12 @@
 package model;
 
+import java.awt.Color;
 import java.util.List;
 
 public class Human extends Player{
 
-	public Human(String username) {
-		super(username);
+	public Human(String username, Color color) {
+		super(username, color);
 	}
 
 	@Override

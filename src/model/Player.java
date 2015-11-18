@@ -1,10 +1,12 @@
 
 package model;
 
+import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player {
+public abstract class Player implements Serializable {
 	public enum PlayerType {
 		Human, Beginner, Intermediate, Hard
 	}
@@ -12,13 +14,18 @@ public abstract class Player {
 	private List<Card> cardsHeld;
 	private String username;
 	private int cardTimes;
+	private Color color;
 	private boolean submitedCard=false;
-	public Player(String username) {
+	public Player(String username, Color c) {
 		cardsHeld = new ArrayList<Card>();
 		this.username = username;
 		cardTimes = 0;
+		color=c;
 	}
 
+	public Color getColor(){
+		return color;
+	}
 
 	public int getCardUnit() {
 		int unit = 0;
@@ -71,7 +78,9 @@ public abstract class Player {
 		
 	}
 	
-	
+	public String getName(){
+		return username;
+	}
 	public abstract PlayerType getType();
 
 	public abstract int getUnit(List<Country> countries);
