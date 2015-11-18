@@ -1,6 +1,8 @@
 
 package model;
 
+import java.awt.Color;
+
 import model.Player.PlayerType;
 
 public class Run6Bots {
@@ -23,8 +25,8 @@ public class Run6Bots {
 	int c = 0;
 	for (int i = 0; i < 500; i++) {
 		game.restart();
-		game.addPlayer(PlayerType.Beginner, "beginner(1)");
-		game.addPlayer(PlayerType.Intermediate, "medium(1)");
+		game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
+		game.addPlayer(PlayerType.Intermediate, "medium(1)", Color.BLUE);
 		game.randomSetCountry(new RiskMap().getAllCountry());
 		game.play();
 		c += game.getRound();
@@ -35,8 +37,8 @@ public class Run6Bots {
 	}
 	for (int i = 0; i < 500; i++) {
 		game.restart();
-		game.addPlayer(PlayerType.Intermediate, "medium(1)");
-		game.addPlayer(PlayerType.Beginner, "beginner(1)");
+		game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.WHITE);
+		game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
 		game.randomSetCountry(new RiskMap().getAllCountry());
 		game.play();
 		c += game.getRound();
@@ -56,8 +58,8 @@ public class Run6Bots {
 		int c = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)");
-			game.addPlayer(PlayerType.Hard, "hard(1)");
+			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -68,8 +70,8 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Hard, "hard(1)");
-			game.addPlayer(PlayerType.Beginner, "beginner(1)");
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -89,8 +91,8 @@ public class Run6Bots {
 		int c = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Intermediate, "medium(1)");
-			game.addPlayer(PlayerType.Hard, "hard(1)");
+			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -101,8 +103,8 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Hard, "hard(1)");
-			game.addPlayer(PlayerType.Intermediate, "medium(1)");
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -123,9 +125,9 @@ public class Run6Bots {
 		int d = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)");
-			game.addPlayer(PlayerType.Intermediate, "medium(1)");
-			game.addPlayer(PlayerType.Hard, "hard(1)");
+			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			d += game.getRound();
@@ -136,9 +138,9 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Hard, "hard(1)");
-			game.addPlayer(PlayerType.Intermediate, "medium(1)");
-			game.addPlayer(PlayerType.Beginner, "beginner(1)");
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
+			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
+			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			d += game.getRound();

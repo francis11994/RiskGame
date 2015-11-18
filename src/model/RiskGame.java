@@ -1,14 +1,17 @@
 package model;
 
+import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.Random;
 
 import model.Player.PlayerType;
 
-public class RiskGame {
-	private static List<List<Country>> AllCountry;
-	private static List<Player> players;
+public class RiskGame extends Observable implements Serializable{
+	private  List<List<Country>> AllCountry;
+	private  List<Player> players;
 	private List<Country> country;
 	private CardCollection cards;
 	private int index;
@@ -17,7 +20,7 @@ public class RiskGame {
 	private Player currentPlayer;
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
-	public static int RunTime = 0;
+	public  int RunTime = 0;
 	
 	public RiskGame() {
 		AllCountry = new ArrayList<List<Country>>();
@@ -27,22 +30,24 @@ public class RiskGame {
 		round = 0;
 	}
 
-	public void addPlayer(PlayerType type, String username) {
-		creatPlayer(type, username);
+	public void addPlayer(PlayerType type, String username,Color color) {
+		creatPlayer(type, username,color);
 		players.add(currentPlayer);
 		country = new ArrayList<Country>();
 		AllCountry.add(country);
+		setChanged();
+		notifyObservers(this);
 	}
 
-	private void creatPlayer(PlayerType type, String username) {
+	private void creatPlayer(PlayerType type, String username, Color color) {
 		if (type.equals(PlayerType.Beginner)) {
-			currentPlayer = new BeginnerAI(username);
+			currentPlayer = new BeginnerAI(username,color );
 		} else if (type.equals(PlayerType.Intermediate)) {
-			currentPlayer = new IntermediateAI(username);
+			currentPlayer = new IntermediateAI(username,color);
 		} else if (type.equals(PlayerType.Hard)) {
-			currentPlayer = new HardAI(username);
+			currentPlayer = new HardAI(username, color);
 		} else
-			currentPlayer = new Human(username);
+			currentPlayer = new Human(username,color);
 	}
 
 	public void randomSetCountry(List<Country> world) {
@@ -54,6 +59,8 @@ public class RiskGame {
 		setArmy();
 		currentPlayer = players.get(index);
 		country = AllCountry.get(index);
+		setChanged();
+		notifyObservers(this);
 	}
 
 	private void setArmy() {
@@ -101,6 +108,8 @@ public class RiskGame {
 			moveSolider(attacter, defender, 1);
 			removeLostPlayer();
 		}
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public void removeLostPlayer() {
@@ -114,17 +123,22 @@ public class RiskGame {
 			if(index>number)
 				index--;
 		}
+		setChanged();
+		notifyObservers(this);
 	}
 
 	private void ownerCountry(Country a) {
 		for (int i = 0; i < AllCountry.size(); i++)
 			AllCountry.get(i).remove(a);
 		AllCountry.get(index).add(a);
+		
 	}
 
 	public void moveSolider(Country here, Country toThere, int number) {
 		here.removeArmys(number);
 		toThere.addArmys(number);
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public void play() {
@@ -138,6 +152,8 @@ public class RiskGame {
 			moveToNext();
 			currentPlayer = players.get(index);
 			country = AllCountry.get(index);
+			setChanged();
+			notifyObservers(this);
 		}
 	}
 
@@ -271,13 +287,26 @@ public class RiskGame {
 		index=0;
 		round=0;
 		currentPlayer=null;
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public Player getPlayer() {
 		return currentPlayer;
 	}
 
+	public List<Player> getAllPlayer(){
+		return players;
+	}
 	public int getRound() {
 		return round;
+	}
+	
+	public List<List<Country>> getAllCountry(){
+		return AllCountry;
+	}
+	
+	public int getIndex(){
+		return index;
 	}
 }

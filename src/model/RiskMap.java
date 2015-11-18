@@ -6,50 +6,50 @@ public class RiskMap {
 
 	private static ArrayList<Country> map;
 	
-	private Country ICELAND = new Country("Iceland");
-	private Country SCANDINAVIA = new Country("Scandinavia");
-	private Country GREATBRITAIN = new Country("Great Britain");
-	private Country NORTHERNEUROPE = new Country("Northern Europe");
-	private Country WESTERNEUROPE = new Country("Western Europe");
-	private Country SOUTHERNEUROPE = new Country("Southern Europe");
-	private Country ALASKA = new Country("Alaska");
-	private Country NORTHWESTTERRITORY = new Country("Northwest Territory");
-	private Country GREENLAND = new Country("Greenland");
-	private Country ALBERTA = new Country("Alberta");
-	private Country ONTARIO = new Country("Ontario");
-	private Country QUEBE = new Country("Quebe");
-	private Country WESTERNUNITEDSTATES = new Country("Western United States");
-	private Country EASTERNUNITEDSTATES = new Country("Eastern United States");
-	private Country CENTRALAMERICA = new Country("Central America");
-	private Country VENEZUELA = new Country("Venezuela");
-	private Country BRAZIL = new Country("Brazil");
-	private Country PERU = new Country("Peru");
-	private Country ARGENTINA = new Country("Argentina");
-	private Country EGYPT = new Country("Egypt");
-	private Country NORTHAFRICA = new Country("North Africa");
-	private Country EASTAFRICA = new Country("East Africa");
+	private Country ICELAND = new Country("Iceland",0,0);
+	private Country SCANDINAVIA = new Country("Scandinavia",0,100);
+	private Country GREATBRITAIN = new Country("Great Britain",0,200);
+	private Country NORTHERNEUROPE = new Country("Northern Europe",0,300);
+	private Country WESTERNEUROPE = new Country("Western Europe",0,400);
+	private Country SOUTHERNEUROPE = new Country("Southern Europe",0,500);
+	private Country ALASKA = new Country("Alaska",0,600);
+	private Country NORTHWESTTERRITORY = new Country("Northwest Territory",0,700);
+	private Country GREENLAND = new Country("Greenland",0,800);
+	private Country ALBERTA = new Country("Alberta",0,900);
+	private Country ONTARIO = new Country("Ontario",0,1000);
+	private Country QUEBE = new Country("Quebe",100,0);
+	private Country WESTERNUNITEDSTATES = new Country("Western United States",100,100);
+	private Country EASTERNUNITEDSTATES = new Country("Eastern United States",100,200);
+	private Country CENTRALAMERICA = new Country("Central America",100,300);
+	private Country VENEZUELA = new Country("Venezuela",100,400);
+	private Country BRAZIL = new Country("Brazil",100,500);
+	private Country PERU = new Country("Peru",100,600);
+	private Country ARGENTINA = new Country("Argentina",100,700);
+	private Country EGYPT = new Country("Egypt",100,800);
+	private Country NORTHAFRICA = new Country("North Africa",100,900);
+	private Country EASTAFRICA = new Country("East Africa",100,1000);
 	//CONGI
-	private Country CENTRALAFRICA = new Country("Central Africa");
-	private Country SOUTHAFRICA = new Country("South Africa");
-	private Country MADAGASCAR = new Country("Madagascar");
+	private Country CENTRALAFRICA = new Country("Central Africa",100,1100);
+	private Country SOUTHAFRICA = new Country("South Africa",100,1200);
+	private Country MADAGASCAR = new Country("Madagascar",100,1300);
 	//UKRAIN
-	private Country RUSSIA = new Country("Russia");
-	private Country URAL = new Country("Ural");
-	private Country SIBERIA = new Country("Siberia");
-	private Country YAKUTSK = new Country("Yakutsk");
-	private Country KAMCHATKA = new Country("Kamchatka");
-	private Country AFGHANISTAN = new Country("Afghanistan");
-	private Country MIDDLEEAST = new Country("Middle East");
-	private Country INDIA = new Country("India");
-	private Country CHINA = new Country("China");
-	private Country SIAM = new Country("Siam");
-	private Country IRKUTSK = new Country("Irkutsk");
-	private Country MONGOLIA = new Country("Mongolia");
-	private Country JAPAN = new Country("Japan");
-	private Country INDONESIA = new Country("Indonesia");
-	private Country EASTERNAUSTRALIA = new Country("Eastern Australia");
-	private Country WESTERNAUSTRALIA = new Country("Western Australia");
-	private Country NEWGUINEA = new Country("New Guinea");
+	private Country UKRAINE = new Country("Ukraine",200,0);
+	private Country URAL = new Country("Ural",200,100);
+	private Country SIBERIA = new Country("Siberia",200,200);
+	private Country YAKUTSK = new Country("Yakutsk",200,300);
+	private Country KAMCHATKA = new Country("Kamchatka",200,400);
+	private Country AFGHANISTAN = new Country("Afghanistan",200,500);
+	private Country MIDDLEEAST = new Country("Middle East",200,600);
+	private Country INDIA = new Country("India",200,700);
+	private Country CHINA = new Country("China",200,800);
+	private Country SIAM = new Country("Siam",200,900);
+	private Country IRKUTSK = new Country("Irkutsk",200,1000);
+	private Country MONGOLIA = new Country("Mongolia",300,0);
+	private Country JAPAN = new Country("Japan",300,100);
+	private Country INDONESIA = new Country("Indonesia",300,200);
+	private Country EASTERNAUSTRALIA = new Country("Eastern Australia",300,300);
+	private Country WESTERNAUSTRALIA = new Country("Western Australia",300,400);
+	private Country NEWGUINEA = new Country("New Guinea",300,500);
 	
 	private ArrayList<Country> asia;
 	private ArrayList<Country> africa;
@@ -86,7 +86,7 @@ public class RiskMap {
 		map.add(CENTRALAFRICA);
 		map.add(SOUTHAFRICA);
 		map.add(MADAGASCAR);
-		map.add(RUSSIA);
+		map.add(UKRAINE);
 		map.add(URAL);
 		map.add(SIBERIA);
 		map.add(YAKUTSK);
@@ -169,29 +169,29 @@ public class RiskMap {
         ICELAND.addNeighbour(GREATBRITAIN);        
         SCANDINAVIA.addNeighbour(ICELAND);
         SCANDINAVIA.addNeighbour(GREATBRITAIN);
-        SCANDINAVIA.addNeighbour(RUSSIA);
+        SCANDINAVIA.addNeighbour(UKRAINE);
         SCANDINAVIA.addNeighbour(NORTHERNEUROPE);
         GREATBRITAIN.addNeighbour(NORTHERNEUROPE);
         GREATBRITAIN.addNeighbour(WESTERNEUROPE);
         NORTHERNEUROPE.addNeighbour(SOUTHERNEUROPE);
-        NORTHERNEUROPE.addNeighbour(RUSSIA);
+        NORTHERNEUROPE.addNeighbour(UKRAINE);
         NORTHERNEUROPE.addNeighbour(WESTERNEUROPE);
         WESTERNEUROPE.addNeighbour(SOUTHERNEUROPE);
         WESTERNEUROPE.addNeighbour(NORTHAFRICA);
         WESTERNEUROPE.addNeighbour(GREATBRITAIN);
         WESTERNEUROPE.addNeighbour(NORTHERNEUROPE);
         SOUTHERNEUROPE.addNeighbour(MIDDLEEAST);
-        SOUTHERNEUROPE.addNeighbour(RUSSIA);
+        SOUTHERNEUROPE.addNeighbour(UKRAINE);
         SOUTHERNEUROPE.addNeighbour(NORTHERNEUROPE);
         SOUTHERNEUROPE.addNeighbour(WESTERNEUROPE);
         SOUTHERNEUROPE.addNeighbour(NORTHAFRICA);
         SOUTHERNEUROPE.addNeighbour(EGYPT);
-        RUSSIA.addNeighbour(URAL);
-        RUSSIA.addNeighbour(AFGHANISTAN);
-        RUSSIA.addNeighbour(MIDDLEEAST);
-        RUSSIA.addNeighbour(SOUTHERNEUROPE);
-        RUSSIA.addNeighbour(NORTHERNEUROPE);
-        RUSSIA.addNeighbour(SCANDINAVIA);
+        UKRAINE.addNeighbour(URAL);
+        UKRAINE.addNeighbour(AFGHANISTAN);
+        UKRAINE.addNeighbour(MIDDLEEAST);
+        UKRAINE.addNeighbour(SOUTHERNEUROPE);
+        UKRAINE.addNeighbour(NORTHERNEUROPE);
+        UKRAINE.addNeighbour(SCANDINAVIA);
         
         //Africa
         NORTHAFRICA.addNeighbour(WESTERNEUROPE);
@@ -219,7 +219,7 @@ public class RiskMap {
         MADAGASCAR.addNeighbour(SOUTHAFRICA);
         
         //Asia
-        URAL.addNeighbour(RUSSIA);
+        URAL.addNeighbour(UKRAINE);
         URAL.addNeighbour(SIBERIA);
         URAL.addNeighbour(AFGHANISTAN);
         URAL.addNeighbour(CHINA);
@@ -246,7 +246,7 @@ public class RiskMap {
         MONGOLIA.addNeighbour(IRKUTSK);
         JAPAN.addNeighbour(KAMCHATKA);
         JAPAN.addNeighbour(MONGOLIA);
-        AFGHANISTAN.addNeighbour(RUSSIA);
+        AFGHANISTAN.addNeighbour(UKRAINE);
         AFGHANISTAN.addNeighbour(URAL);
         AFGHANISTAN.addNeighbour(CHINA);
         AFGHANISTAN.addNeighbour(INDIA);
@@ -260,7 +260,7 @@ public class RiskMap {
         MIDDLEEAST.addNeighbour(EASTAFRICA);
         MIDDLEEAST.addNeighbour(EGYPT);
         MIDDLEEAST.addNeighbour(SOUTHERNEUROPE);
-        MIDDLEEAST.addNeighbour(RUSSIA);
+        MIDDLEEAST.addNeighbour(UKRAINE);
         MIDDLEEAST.addNeighbour(AFGHANISTAN);
         MIDDLEEAST.addNeighbour(INDIA);
         INDIA.addNeighbour(MIDDLEEAST);
@@ -282,7 +282,6 @@ public class RiskMap {
         WESTERNAUSTRALIA.addNeighbour(NEWGUINEA);
         EASTERNAUSTRALIA.addNeighbour(WESTERNAUSTRALIA);
         EASTERNAUSTRALIA.addNeighbour(NEWGUINEA);
-     //   EASTERNAUSTRALIA.addNeighbour(ARGENTINA);
     }
 
 }

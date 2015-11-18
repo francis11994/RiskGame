@@ -1,6 +1,9 @@
 
 package model;
-public class Card {
+
+import java.io.Serializable;
+
+public class Card implements Serializable{
 	public enum CardType {
 		Soldier, Horseman, Cannon, Wild;
 		

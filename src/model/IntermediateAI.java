@@ -1,13 +1,14 @@
 package model;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 
 public class IntermediateAI extends Player {
 	private Random random=new Random();
 	private int index=0;
-	public IntermediateAI(String username) {
-		super(username);
+	public IntermediateAI(String username, Color color) {
+		super(username,color);
 	}
 	@Override
 	public PlayerType getType() {

@@ -1,13 +1,14 @@
 package model;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 
 public class HardAI extends Player{
 	private Random random=new Random();
 	private int index;
-	public HardAI(String username) {
-		super(username);
+	public HardAI(String username, Color color) {
+		super(username,color);
 	}
 
 	@Override

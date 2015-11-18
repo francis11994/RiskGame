@@ -2,6 +2,7 @@ package Test;
 
 import static org.junit.Assert.*;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class GameTest {
 	public void testAI() {
 		for (int i = 0; i < 100; i++) {
 			RiskGame game = new RiskGame();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)");
-			game.addPlayer(PlayerType.Intermediate, "medium(1)");
-			game.addPlayer(PlayerType.Hard, "hard(1)");
+			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
+			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
+			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 		}
@@ -92,12 +93,12 @@ public class GameTest {
 		assertTrue(card43.CanTurnIn(card03, card04));
 	}
 	
-	private Country ICELAND = new Country("Iceland");
-	private Country SCANDINAVIA = new Country("Scandinavia");
-	private Country GREATBRITAIN = new Country("Great Britain");
-	private Country NORTHERNEUROPE = new Country("Northern Europe");
-	private Country SOUTHERNEUROPE = new Country("Southern Europe");
-	private Country ALASKA = new Country("Alaska");
+	private Country ICELAND = new Country("Iceland",100,100);
+	private Country SCANDINAVIA = new Country("Scandinavia",100,100);
+	private Country GREATBRITAIN = new Country("Great Britain",100,100);
+	private Country NORTHERNEUROPE = new Country("Northern Europe",100,100);
+	private Country SOUTHERNEUROPE = new Country("Southern Europe",100,100);
+	private Country ALASKA = new Country("Alaska",100,100);
 	private Card card02=new Card(CardType.Cannon, "Scandinavia");
 	private Card card03=new Card(CardType.Cannon, "Great Britain");
 	private Card card04=new Card(CardType.Cannon, "Northern Europe");
