@@ -34,15 +34,17 @@ public class SoldierObserver extends JPanel implements Observer{
 	RiskGame game;
 	Country currentCountry;
 	private BufferedImage map;
-//	private JButton Finish=new JButton("Finish this turn");
+	private JButton Finish=new JButton("Finish this turn");
 	public SoldierObserver(RiskGame Game){
 		game=Game;
+		game.setRuntime(100);
 		update(game);
 		setSize(GameGUI.SCREEN_LENGTH, GameGUI.SCREEN_HEIGHT);
 		setLayout(null);
-//		add(Finish);
-//		Finish.addActionListener(new MouseOperation());
-//		Finish.setSize(50,50);
+		add(Finish);
+		Finish.addActionListener(new MouseOperation());
+		Finish.setSize(50,200);
+		game.setRuntime(100);
 		addMouseListener(new MouseOperation());
 		addMouseMotionListener(new MouseOperation());
 		try {
@@ -77,7 +79,6 @@ public class SoldierObserver extends JPanel implements Observer{
 			for(Country country:countries){
 				if(country!=currentCountry){
 				g2.setColor(a.getColor());
-				//if(country.getArmyCount()<10)
 				g2.fillOval(country.getX(),country.getY(),28,28);
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial Black", Font.BOLD,20));
@@ -159,7 +160,8 @@ public class SoldierObserver extends JPanel implements Observer{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-		
+			game.moveToNext();
+			game.play();
 		}
 		
 	}

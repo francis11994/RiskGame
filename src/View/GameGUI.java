@@ -50,7 +50,6 @@ public class GameGUI extends JFrame{
 		observer=new SoldierObserver(game);
 		game.addObserver((Observer)observer);
 		add(observer);
-		//game.setRuntime(10);
 		repaint();
 	}
 	
@@ -66,9 +65,9 @@ public class GameGUI extends JFrame{
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to resume the previous operation?", null, JOptionPane.YES_NO_OPTION);
 			if (reply == JOptionPane.NO_OPTION){
 				game.restart();
-				game.addPlayer(PlayerType.Beginner,"ONE",Color.BLUE);
+				game.addPlayer(PlayerType.Hard,"ONE",Color.BLUE);
+				game.addPlayer(PlayerType.Hard,"ONE",Color.BLACK);
 				game.addPlayer(PlayerType.Beginner,"TWO",Color.GREEN);
-				game.addPlayer(PlayerType.Human,"THREE",Color.RED);
 				game.randomSetCountry(new RiskMap().getAllCountry());
 				repaint();
 			}

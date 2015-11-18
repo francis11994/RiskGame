@@ -27,9 +27,11 @@ public class BeginnerAI extends Player {
 
 	@Override
 	public void reinforce(int unit, List<Country> countries) {
+		Country selected;
 		while(unit>0){
 			index=random.nextInt(countries.size());
-			countries.get(index).addArmys(1);
+			selected=countries.get(index);
+			selected.addArmys(1);
 			unit--;	
 		}
 		
