@@ -20,7 +20,7 @@ import model.Player.PlayerType;
 public class GameTest {
 	@Test
 	public void testAI() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			RiskGame game = new RiskGame();
 			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
 			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
@@ -36,7 +36,6 @@ public class GameTest {
 		a.BeginnerVSIntermediate();
 		a.BeginnerVSHard();
 		a.IntermediateVSHard();
-		a.BeginnerVSIntermediateVSHard();
 	}
 
 	@Test

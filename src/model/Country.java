@@ -60,7 +60,7 @@ public class Country implements Serializable{
 		return Y;
 	}
 	public boolean isLocateAt(Point point){
-		if(Math.abs(point.getX()-X)<50&&Math.abs(point.getY()-Y)<50)
+		if(Math.abs(point.getX()-X)<40&&Math.abs(point.getY()-Y)<40)
 			return true;
 		return false;
 	}

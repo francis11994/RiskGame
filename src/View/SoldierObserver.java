@@ -1,11 +1,15 @@
 package View;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +18,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.Country;
@@ -29,12 +34,17 @@ public class SoldierObserver extends JPanel implements Observer{
 	RiskGame game;
 	Country currentCountry;
 	private BufferedImage map;
+//	private JButton Finish=new JButton("Finish this turn");
 	public SoldierObserver(RiskGame Game){
 		game=Game;
 		update(game);
 		setSize(GameGUI.SCREEN_LENGTH, GameGUI.SCREEN_HEIGHT);
 		setLayout(null);
+//		add(Finish);
+//		Finish.addActionListener(new MouseOperation());
+//		Finish.setSize(50,50);
 		addMouseListener(new MouseOperation());
+		addMouseMotionListener(new MouseOperation());
 		try {
 			map=ImageIO.read(new File("./picture/RiskMap.PNG"));
 		} catch (IOException e) {
@@ -53,6 +63,7 @@ public class SoldierObserver extends JPanel implements Observer{
 	@Override
 	public void update(Observable o, Object arg) {
 		update((RiskGame)o);	
+		repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -60,13 +71,29 @@ public class SoldierObserver extends JPanel implements Observer{
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(map,0,0,GameGUI.SCREEN_LENGTH, GameGUI.SCREEN_HEIGHT,null);
 		int i=0;
+		
 		for(List<Country> countries:AllCountry){
 			Player a=players.get(i);
 			for(Country country:countries){
+				if(country!=currentCountry){
 				g2.setColor(a.getColor());
-				g2.fillRect(country.getX(),country.getY(),50,50);
+				//if(country.getArmyCount()<10)
+				g2.fillOval(country.getX(),country.getY(),28,28);
 				g2.setColor(Color.WHITE);
-				g2.drawString(a.getName()+"\n"+country.getArmyCount(), country.getX(),country.getY()+20);
+				g2.setFont(new Font("Arial Black", Font.BOLD,20));
+				if(country.getArmyCount()<10)
+				g2.drawString(""+country.getArmyCount(), country.getX()+5,country.getY()+20);
+				else g2.drawString(""+country.getArmyCount(), country.getX(),country.getY()+20);
+				}
+				else {
+					g2.setColor(a.getColor());
+					g2.fillOval(country.getX()-20,country.getY()+20,40,40);
+					g2.setColor(Color.WHITE);
+					g2.setFont(new Font("Arial Black", Font.BOLD,30));
+					if(country.getArmyCount()<10)
+					g2.drawString(""+country.getArmyCount(), country.getX()-15,country.getY()+50);
+					else g2.drawString(""+country.getArmyCount(), country.getX()-20,country.getY()+50);
+				}
 			}
 			i++;
 		}
@@ -81,18 +108,19 @@ public class SoldierObserver extends JPanel implements Observer{
 					clicked=true;
 				}
 			}
+		if(!clicked)
+			currentCountry=null;
+		repaint();
 		return clicked;
 	}
 	
-	private class MouseOperation implements MouseListener{
+	private class MouseOperation implements ActionListener,MouseListener, MouseMotionListener{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if(getClickedCountry(e.getPoint())){
+			if(currentCountry!=null)
 				currentCountry.addArmys(1);
-				repaint();
-			}
-			
+			repaint();
 		}
 
 		@Override
@@ -117,6 +145,21 @@ public class SoldierObserver extends JPanel implements Observer{
 		public void mouseExited(MouseEvent e) {
 			// TODO Auto-generated method stub
 			
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			getClickedCountry(e.getPoint());
+
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		
 		}
 		
 	}

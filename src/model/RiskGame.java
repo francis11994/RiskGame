@@ -56,16 +56,12 @@ public class RiskGame extends Observable implements Serializable{
 			AllCountry.get(index).add(world.remove(i));
 			moveToNext();
 		}
-		setArmy();
-		currentPlayer = players.get(index);
-		country = AllCountry.get(index);
-		setChanged();
-		notifyObservers(this);
-	}
-
-	private void setArmy() {
 		round = (players.size() - 10) * 5;
 		index = 0;
+		currentPlayer = players.get(0);
+		country = AllCountry.get(0);
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public void moveToNext() {
@@ -271,7 +267,7 @@ public class RiskGame extends Observable implements Serializable{
 	public void setRuntime(int time){
 		RunTime=time;
 	}
-	public void sleep(){
+	private void sleep(){
 		if(RunTime!=0)
 		try {
 			Thread.sleep(RunTime);

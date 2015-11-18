@@ -28,8 +28,8 @@ public class GameGUI extends JFrame{
 	public static void main(String[] args){
 		new GameGUI().setVisible(true);
 	}
-	public static int SCREEN_LENGTH = 1400;
-	public static int SCREEN_HEIGHT = 800;
+	public static int SCREEN_LENGTH = 1200;
+	public static int SCREEN_HEIGHT = 700;
 	private BufferedImage map;
 	private RiskGame game;
 	private SoldierObserver observer;
@@ -46,11 +46,11 @@ public class GameGUI extends JFrame{
 	}
 	
 	public void setUpModelAndObservers(){
-		game=new RiskGame();
 		Load();
 		observer=new SoldierObserver(game);
 		game.addObserver((Observer)observer);
 		add(observer);
+		//game.setRuntime(10);
 		repaint();
 	}
 	
@@ -66,12 +66,13 @@ public class GameGUI extends JFrame{
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to resume the previous operation?", null, JOptionPane.YES_NO_OPTION);
 			if (reply == JOptionPane.NO_OPTION){
 				game.restart();
-				game.addPlayer(PlayerType.Human,"ONE",Color.BLUE);
-				game.addPlayer(PlayerType.Human,"TWO",Color.BLACK);
+				game.addPlayer(PlayerType.Beginner,"ONE",Color.BLUE);
+				game.addPlayer(PlayerType.Beginner,"TWO",Color.GREEN);
 				game.addPlayer(PlayerType.Human,"THREE",Color.RED);
 				game.randomSetCountry(new RiskMap().getAllCountry());
 				repaint();
 			}
+			game.play();
 			
 		}
 
@@ -131,6 +132,7 @@ public class GameGUI extends JFrame{
 	}
 	
 	private void Load(){
+		game=new RiskGame();
 		try{
 			FileInputStream fos=new FileInputStream("myFile");
 			ObjectInputStream oos = new ObjectInputStream(fos);
