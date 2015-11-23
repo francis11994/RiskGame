@@ -16,6 +16,7 @@ import model.Card.CardType;
 import model.CardCollection;
 import model.Country;
 import model.Player.PlayerType;
+import model.RiskMap.CountryType;
 
 public class GameTest {
 	@Test
@@ -66,7 +67,6 @@ public class GameTest {
 		assertEquals(NORTHERNEUROPE.getname(), "Northern Europe");
 		assertEquals(SOUTHERNEUROPE.getname(), "Southern Europe");
 		assertEquals(ALASKA.getname(),"Alaska");
-		ICELAND.getNegibors();
 		ALASKA.addArmys(3);
 		ALASKA.removeArmys(2);
 		assertEquals(ALASKA.getArmyCount(),2);
@@ -92,12 +92,12 @@ public class GameTest {
 		assertTrue(card43.CanTurnIn(card03, card04));
 	}
 	
-	private Country ICELAND = new Country("Iceland",100,100);
-	private Country SCANDINAVIA = new Country("Scandinavia",100,100);
-	private Country GREATBRITAIN = new Country("Great Britain",100,100);
-	private Country NORTHERNEUROPE = new Country("Northern Europe",100,100);
-	private Country SOUTHERNEUROPE = new Country("Southern Europe",100,100);
-	private Country ALASKA = new Country("Alaska",100,100);
+	private Country ICELAND = new Country("Iceland",CountryType.SOUTHAMERICA,100,100);
+	private Country SCANDINAVIA = new Country("Scandinavia",CountryType.SOUTHAMERICA,100,100);
+	private Country GREATBRITAIN = new Country("Great Britain",CountryType.SOUTHAMERICA,100,100);
+	private Country NORTHERNEUROPE = new Country("Northern Europe",CountryType.SOUTHAMERICA,100,100);
+	private Country SOUTHERNEUROPE = new Country("Southern Europe",CountryType.SOUTHAMERICA,100,100);
+	private Country ALASKA = new Country("Alaska",CountryType.SOUTHAMERICA,100,100);
 	private Card card02=new Card(CardType.Cannon, "Scandinavia");
 	private Card card03=new Card(CardType.Cannon, "Great Britain");
 	private Card card04=new Card(CardType.Cannon, "Northern Europe");

@@ -1,25 +1,21 @@
 
+
+
 package View;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Observer;
-
-import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import model.Player.PlayerType;
 import model.RiskGame;
 import model.RiskMap;
@@ -28,11 +24,11 @@ public class GameGUI extends JFrame{
 	public static void main(String[] args){
 		new GameGUI().setVisible(true);
 	}
-	public static int SCREEN_LENGTH = 1200;
-	public static int SCREEN_HEIGHT = 700;
-	private BufferedImage map;
+	public static int SCREEN_LENGTH = 1200*2/3;
+	public static int SCREEN_HEIGHT = 650;
 	private RiskGame game;
-	private SoldierObserver observer;
+	private Observer1 observer1;
+	private Observer2 observer2;
 	public GameGUI(){
 		layoutTheJFrame();
 		setUpModelAndObservers();
@@ -42,34 +38,49 @@ public class GameGUI extends JFrame{
 	public void layoutTheJFrame(){
 		setTitle("Risk Game");
 		setSize(SCREEN_LENGTH, SCREEN_HEIGHT);
+		setLayout(null);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
 	public void setUpModelAndObservers(){
 		Load();
-		observer=new SoldierObserver(game);
-		game.addObserver((Observer)observer);
-		add(observer);
-		repaint();
+		observer1=new Observer1(game);
+		game.addObserver((Observer)observer1);
+		add(observer1);
+		observer1.setLocation(0,30);
+		
+		observer2 = new Observer2(game);
+		game.addObserver(observer2);
+		observer2.setSize(800,30);
+		observer2.setLocation(50,0);
+		add(observer2);
+	
+		Play=new JButton("Finish this turn");
+		observer1.add(Play);
+		Play.setSize(100,40);
+		Play.setLocation(100,500);
+		Play.addActionListener(new GameListener());
 	}
 	
 	public void registerListeners(){
 		addWindowListener(new GameListener());
 	}
+	private JButton Play;
 	
-	
-	private class GameListener implements WindowListener{
+	private class GameListener implements WindowListener, ActionListener{
 
 		@Override
 		public void windowOpened(WindowEvent e) {
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to resume the previous operation?", null, JOptionPane.YES_NO_OPTION);
 			if (reply == JOptionPane.NO_OPTION){
 				game.restart();
-				game.addPlayer(PlayerType.Hard,"ONE",Color.BLUE);
-				game.addPlayer(PlayerType.Hard,"ONE",Color.BLACK);
-				game.addPlayer(PlayerType.Beginner,"TWO",Color.GREEN);
+				game.addPlayer(PlayerType.Human,"Player1AWDQD",Color.BLUE);
+				game.addPlayer(PlayerType.Hard,"HardAI",Color.BLACK);
+				game.addPlayer(PlayerType.Human,"Player2",Color.GREEN);
+				game.addPlayer(PlayerType.Intermediate,"MediumAI",Color.RED);
+				game.addPlayer(PlayerType.Human,"Player3",Color.GRAY);
+				game.addPlayer(PlayerType.Beginner,"EasyAI",Color.MAGENTA);
 				game.randomSetCountry(new RiskMap().getAllCountry());
-				repaint();
 			}
 			game.play();
 			
@@ -115,6 +126,13 @@ public class GameGUI extends JFrame{
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			game.moveToNext();
+			game.play();
+			
+		}
 		
 	}
 	
@@ -139,7 +157,6 @@ public class GameGUI extends JFrame{
 			oos.close();
 			fos.close();
 		} catch (Exception a){
-			a.printStackTrace();
 		}
 	}
 	

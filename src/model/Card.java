@@ -20,6 +20,9 @@ public class Card implements Serializable{
 		return type;
 	}
 	
+	public String getCountry(){
+		return country;
+	}
 	public boolean CanTurnIn(Card card2, Card card3){
 		boolean a=sameType(card2, card3);
 		boolean b=oneOfEach(card2, card3);

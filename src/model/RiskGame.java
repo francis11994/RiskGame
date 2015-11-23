@@ -1,3 +1,4 @@
+
 package model;
 
 import java.awt.Color;
@@ -9,182 +10,193 @@ import java.util.Random;
 
 import model.Player.PlayerType;
 
-public class RiskGame extends Observable implements Serializable{
-	private  List<List<Country>> AllCountry;
-	private  List<Player> players;
+public class RiskGame extends Observable implements Serializable {
+	private List<List<Country>> world;
 	private List<Country> country;
-	private CardCollection cards;
-	private int index;
-	private int round;
-	private Random random = new Random();
+	private Country currentCountry;
+	private List<Player> players;
 	private Player currentPlayer;
+	private CardCollection cards;
+	private int round;
+	private int index;
+	private Random random = new Random();
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
-	public  int RunTime = 0;
-	
+	private boolean isPlay;
+	public int RunTime = 0;
+	public int reinforcement;
+	public RiskMap map = new RiskMap();
+
 	public RiskGame() {
-		AllCountry = new ArrayList<List<Country>>();
+		currentCountry = null;
+		world = new ArrayList<List<Country>>();
 		players = new ArrayList<Player>();
 		cards = new CardCollection();
 		index = 0;
 		round = 0;
+		isPlay = false;
+		reinforcement = 0;
 	}
 
-	public void addPlayer(PlayerType type, String username,Color color) {
-		creatPlayer(type, username,color);
-		players.add(currentPlayer);
-		country = new ArrayList<Country>();
-		AllCountry.add(country);
-		setChanged();
-		notifyObservers(this);
+	public void addPlayer(PlayerType type, String username, Color color) {
+		if (players.size() < 7) {
+			if (type.equals(PlayerType.Beginner)) {
+				currentPlayer = new BeginnerAI(username, color);
+			} else if (type.equals(PlayerType.Intermediate)) {
+				currentPlayer = new IntermediateAI(username, color);
+			} else if (type.equals(PlayerType.Hard)) {
+				currentPlayer = new HardAI(username, color);
+			} else
+				currentPlayer = new Human(username, color);
+
+			players.add(currentPlayer);
+			country = new ArrayList<Country>();
+			world.add(country);
+			setChanged();
+			notifyObservers(this);
+		}
 	}
 
-	private void creatPlayer(PlayerType type, String username, Color color) {
-		if (type.equals(PlayerType.Beginner)) {
-			currentPlayer = new BeginnerAI(username,color );
-		} else if (type.equals(PlayerType.Intermediate)) {
-			currentPlayer = new IntermediateAI(username,color);
-		} else if (type.equals(PlayerType.Hard)) {
-			currentPlayer = new HardAI(username, color);
-		} else
-			currentPlayer = new Human(username,color);
-	}
-
-	public void randomSetCountry(List<Country> world) {
-		while (world.size() > 0) {
-			int i = random.nextInt(world.size());
-			AllCountry.get(index).add(world.remove(i));
+	public void randomSetCountry(List<Country> countries) {
+		while (countries.size() > 0) {
+			int i = random.nextInt(countries.size());
+			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		round = (players.size() - 10) * 5;
+		reinforcement = (10 - players.size()) * 5;
 		index = 0;
 		currentPlayer = players.get(0);
-		country = AllCountry.get(0);
+		country = world.get(0);
 		setChanged();
 		notifyObservers(this);
 	}
 
+	// sleep
 	public void moveToNext() {
-		sleep();
 		index++;
 		if (index >= players.size()) {
+			
 			index = 0;
-			round++;
+			if (isPlay)
+				round++;
+			if (reinforcement == 1)
+				isPlay = true;
+			if (reinforcement > 0)
+				reinforcement--;
 		}
-		currentPlayer=players.get(index);
-		country = AllCountry.get(index);
+		currentPlayer = players.get(index);
+		country = world.get(index);
 		setChanged();
 		notifyObservers(this);
 	}
 
 	public void play() {
-		while (!currentPlayer.getType().equals(PlayerType.Human) && isPlaying()) {
+		while (!currentPlayer.getType().equals(PlayerType.Human) && players.size() > 1) {
+			sleep();
 			if (currentPlayer.getType().equals(PlayerType.Beginner))
 				BeginnerMove();
-			if (currentPlayer.getType().equals(PlayerType.Intermediate))
+			if (currentPlayer.getType().equals(PlayerType.Intermediate)){
 				IntermediateMove();
+			}
 			if (currentPlayer.getType().equals(PlayerType.Hard))
 				HardMove();
+			CheckWinner();
 			moveToNext();
 		}
 	}
 
+	// sleep
 	public void attact(Country attacter, Country defender) {
-		sleep();
 		while (attacter.getArmyCount() > 1 && defender.getArmyCount() > 0) {
 			dice1.roll();
 			dice2.roll();
-			if (dice1.isWin(dice2))
+			if (dice1.isWin(dice2)) {
 				defender.removeArmys(1);
-			else
+				// System.out.println("Attaction: " + attacter.getname() + "
+				// rolled " + dice1.getNumber() +
+				// " and " + defender.getname() + " rolled " + dice2.getNumber()
+				// + " So, " + defender.getname() + " lost 1 solider");
+			} else {
 				attacter.removeArmys(1);
+				// System.out.println("Attaction: " + attacter.getname() + "
+				// rolled " + dice1.getNumber() +
+				// " and " + defender.getname() + " rolled " + dice2.getNumber()
+				// + " So, " + attacter.getname() + " lost 1 solider");
+			}
 		}
 		if (defender.getArmyCount() == 0) {
-			ownerCountry(defender);
-			moveSolider(attacter, defender, 1);
-			removeLostPlayer();
+			for (int i = 0; i < world.size(); i++)
+				world.get(i).remove(defender);
+			world.get(index).add(defender);
+			attacter.moveSolider(defender, 1);
 		}
 		setChanged();
 		notifyObservers(this);
-	}
-
-	public void removeLostPlayer() {
 		sleep();
+
+		// removeLostPlayer
 		int number = -1;
 		for (int i = 0; i < players.size(); i++)
-			if (AllCountry.get(i).size() == 0)
+			if (world.get(i).size() == 0)
 				number = i;
 		if (number != -1) {
-			AllCountry.remove(number);
+			// System.out.println(players.get(number).getName()+" lost
+			// game!");
+			world.remove(number);
 			players.remove(number);
-			if(index>number)
+			if (index > number)
 				index--;
+			setChanged();
+			notifyObservers(this);
+			sleep();
+			CheckWinner();
 		}
-		setChanged();
-		notifyObservers(this);
 	}
 
-	private void ownerCountry(Country a) {
-		for (int i = 0; i < AllCountry.size(); i++)
-			AllCountry.get(i).remove(a);
-		AllCountry.get(index).add(a);
-		
-	}
-
-	public void moveSolider(Country here, Country toThere, int number) {
-		sleep();
-		here.removeArmys(number);
-		toThere.addArmys(number);
-		setChanged();
-		notifyObservers(this);
-	}
-
-	public boolean isPlaying() {
-		boolean isPlaying = players.size() > 1;
-		if (isPlaying && round > 150) {
-			isPlaying = false;
-			for (int i = 0; i < AllCountry.size() - 1; i++) {
-				if (AllCountry.get(i).size() < AllCountry.get(i + 1).size()) {
-					AllCountry.remove(i);
+	private void CheckWinner() {
+		if (round > 150) {
+			for (int i = 0; i < world.size() - 1; i++) {
+				if (world.get(i).size() < world.get(i + 1).size()) {
+					world.remove(i);
 					players.remove(i);
 					i--;
 				} else {
-					AllCountry.remove(i + 1);
+					world.remove(i + 1);
 					players.remove(i + 1);
 				}
 			}
 		}
-		return isPlaying;
+		if (players.size() <= 1)
+			isPlay = false;
 	}
-	
+
 	// Beginner AI randomly set armies, randomly attact countries, cannot submit
 	// card
 	public void BeginnerMove() {
-		if (round <= 0){
-			sleep();
-			currentPlayer.reinforce(1, country);
+		if (reinforcement > 0) {
+			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
-		}
-		if (round > 0) {
-			int unit = currentPlayer.getUnit(country);
-			while(unit!=0){
 			sleep();
-			currentPlayer.reinforce(unit, country);
-			unit--;
+		} else if (round >= 0) {
+			int unit = currentPlayer.getUnit(country);
+			while (unit != 0) {
+				currentPlayer.reinforce(country);
+				unit--;
+				sleep();
 			}
 			int count = 0;
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors();
+				List<Country> neighbors = attacter.getNegibors(country);
 				for (int n = 0; n < neighbors.size(); n++) {
 					Country neighbor = neighbors.get(n);
 					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 3) {
 						sleep();
 						attact(attacter, neighbor);
 						if (!country.contains(neighbor))
-							moveSolider(attacter, neighbor, attacter.getArmyCount() / 2);
-							count++;
+							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
+						count++;
 					}
 				}
 			}
@@ -194,101 +206,115 @@ public class RiskGame extends Observable implements Serializable{
 	// Intermediate AI set armies at threaten countries,randomly attact
 	// contries, can submit card
 	public void IntermediateMove() {
-		if (round <= 0){
-			sleep();
-			currentPlayer.reinforce(1, country);
+		if (reinforcement > 0) {
+			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
-		}
-		if (round > 0) {
-			Country newCountry=country.get(0);
+			sleep();
+		} else if (round >= 0) {
+			Country newCountry = country.get(0);
 			currentPlayer.addCards(cards.getCard());
 			currentPlayer.AIsubmitCard();
 			int unit = currentPlayer.getUnit(country);
-			while(unit!=0){
-				sleep();
-				currentPlayer.reinforce(unit, country);
+			while (unit > 0) {
+				currentPlayer.reinforce(country);
 				unit--;
-				}
+				sleep();
+			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors();
-				for (int n = 0; n < neighbors.size(); n++) {
-					Country neighbor = neighbors.get(n);
-					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) ) {
+				List<Country> neighbors = attacter.getNegibors(country);
+				for (Country neighbor : neighbors) {
+					if (attacter.getArmyCount() > 1) {
 						attact(attacter, neighbor);
-						if (country.contains(neighbor))
-							moveSolider(attacter, neighbor, attacter.getArmyCount() /2);
+						if (country.contains(neighbor)) {
+							newCountry = neighbor;
+							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
+							setChanged();
+							notifyObservers(this);
+							sleep();
+						}
+
 					}
 				}
 			}
-			Country center=getLargestCountry();
+			// reinforcement
+			Country LargestArmy = country.get(0);
+			for (Country temp : country) {
+				if (LargestArmy.getArmyCount() < temp.getArmyCount())
+					LargestArmy = temp;
+			}
+			LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
+			setChanged();
+			notifyObservers(this);
 			sleep();
-			moveSolider(center, newCountry,center.getArmyCount()-1);	
 		}
 	}
 
 	public void HardMove() {
-		if (round <= 0){
+		if (reinforcement > 0) {
+			currentPlayer.reinforce(country);
+			setChanged();
+			notifyObservers(this);
 			sleep();
-			currentPlayer.reinforce(1, country);
-			
-		}
-		if (round > 0) {
-			Country newCountry=country.get(0);
+		} else if (round > 0) {
+			Country newCountry = country.get(0);
 			currentPlayer.addCards(cards.getCard());
 			currentPlayer.AIsubmitCard();
 			int unit = currentPlayer.getUnit(country);
-			while(unit!=0){
-				sleep();
-				currentPlayer.reinforce(unit, country);
+			while (unit > 0) {
+				currentPlayer.reinforce(country);
 				unit--;
-				}
+				sleep();
+			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors();
-				for (int n = 0; n < neighbors.size(); n++) {
-					Country neighbor = neighbors.get(n);
-					if (attacter.getArmyCount() > 1 && !country.contains(neighbor)) {
+				List<Country> neighbors = attacter.getNegibors(country);
+				for (Country neighbor : neighbors) {
+					if (attacter.getArmyCount() > 1) {
 						attact(attacter, neighbor);
-						if (country.contains(neighbor))
-							newCountry=neighbor;
-							moveSolider(attacter, neighbor, attacter.getArmyCount() /2);
+						if (country.contains(neighbor)) {
+							newCountry = neighbor;
+							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
+							setChanged();
+							notifyObservers(this);
+							sleep();
+						}
+
 					}
 				}
 			}
-			Country center=getLargestCountry();
-			moveSolider(center, newCountry,center.getArmyCount()-1);			
+			// reinforcement
+			Country LargestArmy = country.get(0);
+			for (Country temp : country) {
+				if (LargestArmy.getArmyCount() < temp.getArmyCount())
+					LargestArmy = temp;
+			}
+			LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
+			setChanged();
+			notifyObservers(this);
+			sleep();
 		}
 	}
 
-	private Country getLargestCountry(){
-		Country a=country.get(0);
-		for(Country temp:country){
-			if(a.getArmyCount() < temp.getArmyCount())
-				a=temp;
-		}
-			return a;
+	public int getReinforcement() {
+		return reinforcement;
 	}
-	public void setRuntime(int time){
-		RunTime=time;
+
+	public void setRuntime(int time) {
+		RunTime = time;
 	}
-	private void sleep(){
-		if(RunTime!=0)
-		try {
-			Thread.sleep(RunTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+
 	public void restart() {
 		players.clear();
-		AllCountry.clear();
+		world.clear();
 		cards.shuffle();
-		
-		index=0;
-		round=0;
-		currentPlayer=null;
+		index = 0;
+		round = 0;
+		currentCountry = null;
+		currentPlayer = null;
+		reinforcement = 0;
+		isPlay = false;
 		setChanged();
 		notifyObservers(this);
 	}
@@ -297,18 +323,28 @@ public class RiskGame extends Observable implements Serializable{
 		return currentPlayer;
 	}
 
-	public List<Player> getAllPlayer(){
+	public List<Player> getAllPlayer() {
 		return players;
 	}
+
 	public int getRound() {
 		return round;
 	}
-	
-	public List<List<Country>> getAllCountry(){
-		return AllCountry;
+
+	public List<List<Country>> getAllCountry() {
+		return world;
 	}
-	
-	public int getIndex(){
+
+	public int getIndex() {
 		return index;
+	}
+
+	private void sleep() {
+		if (RunTime != 0)
+			try {
+				Thread.sleep(RunTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 	}
 }

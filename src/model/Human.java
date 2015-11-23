@@ -3,7 +3,7 @@ package model;
 import java.awt.Color;
 import java.util.List;
 
-public class Human extends Player{
+public class Human extends Player {
 
 	public Human(String username, Color color) {
 		super(username, color);
@@ -11,23 +11,20 @@ public class Human extends Player{
 
 	@Override
 	public PlayerType getType() {
-	return PlayerType.Human;
+		return PlayerType.Human;
 	}
 
 	@Override
 	public int getUnit(List<Country> countries) {
-		int card=getCardUnit();
-		int total= card + countries.size();
-		if(total<3)
-			total=3;
+		int total = getCardUnit() + countries.size();
+		if (total < 3)
+			total = 3;
 		return total;
 	}
 
 	@Override
-	public void reinforce(int unit,List<Country> countries) {
-		return;
-		
-	}
+	public void reinforce(List<Country> countries) {
 
+	}
 
 }
