@@ -24,7 +24,7 @@ public class GameGUI extends JFrame{
 	public static void main(String[] args){
 		new GameGUI().setVisible(true);
 	}
-	public static int SCREEN_LENGTH = 1200*2/3;
+	public static int SCREEN_LENGTH = 800;
 	public static int SCREEN_HEIGHT = 650;
 	private RiskGame game;
 	private Observer1 observer1;
@@ -57,8 +57,8 @@ public class GameGUI extends JFrame{
 	
 		Play=new JButton("Finish this turn");
 		observer1.add(Play);
-		Play.setSize(100,40);
-		Play.setLocation(100,500);
+		Play.setSize(150,40);
+		Play.setLocation(10,500);
 		Play.addActionListener(new GameListener());
 	}
 	
@@ -74,7 +74,7 @@ public class GameGUI extends JFrame{
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to resume the previous operation?", null, JOptionPane.YES_NO_OPTION);
 			if (reply == JOptionPane.NO_OPTION){
 				game.restart();
-				game.addPlayer(PlayerType.Human,"Player1AWDQD",Color.BLUE);
+				game.addPlayer(PlayerType.Human,"Player1",Color.BLUE);
 				game.addPlayer(PlayerType.Hard,"HardAI",Color.BLACK);
 				game.addPlayer(PlayerType.Human,"Player2",Color.GREEN);
 				game.addPlayer(PlayerType.Intermediate,"MediumAI",Color.RED);

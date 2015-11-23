@@ -22,9 +22,8 @@ public class RiskGame extends Observable implements Serializable {
 	private Random random = new Random();
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
-	private boolean isPlay;
 	public int RunTime = 0;
-	public int reinforcement;
+	public static int  reinforcement;
 	public RiskMap map = new RiskMap();
 
 	public RiskGame() {
@@ -34,7 +33,6 @@ public class RiskGame extends Observable implements Serializable {
 		cards = new CardCollection();
 		index = 0;
 		round = 0;
-		isPlay = false;
 		reinforcement = 0;
 	}
 
@@ -63,7 +61,7 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = (10 - players.size()) * 5;
+		reinforcement = (7 - players.size()) * 5;		///ghgfutfu
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
@@ -74,18 +72,21 @@ public class RiskGame extends Observable implements Serializable {
 	// sleep
 	public void moveToNext() {
 		index++;
-		if (index >= players.size()) {
-			
-			index = 0;
-			if (isPlay)
-				round++;
-			if (reinforcement == 1)
-				isPlay = true;
-			if (reinforcement > 0)
-				reinforcement--;
-		}
+			if (index >= players.size()) {
+				index = 0;
+				if(round>0)
+					round++;
+				else{
+				if (reinforcement == 1)
+					round = 1;
+				if (reinforcement > 0)
+					reinforcement--;
+				}
+			}
 		currentPlayer = players.get(index);
 		country = world.get(index);
+		if(round>0 &&players.size()>1)
+			reinforcement = currentPlayer.getUnit(country);
 		setChanged();
 		notifyObservers(this);
 	}
@@ -95,7 +96,7 @@ public class RiskGame extends Observable implements Serializable {
 			sleep();
 			if (currentPlayer.getType().equals(PlayerType.Beginner))
 				BeginnerMove();
-			if (currentPlayer.getType().equals(PlayerType.Intermediate)){
+			if (currentPlayer.getType().equals(PlayerType.Intermediate)) {
 				IntermediateMove();
 			}
 			if (currentPlayer.getType().equals(PlayerType.Hard))
@@ -166,23 +167,20 @@ public class RiskGame extends Observable implements Serializable {
 				}
 			}
 		}
-		if (players.size() <= 1)
-			isPlay = false;
 	}
 
 	// Beginner AI randomly set armies, randomly attact countries, cannot submit
 	// card
 	public void BeginnerMove() {
-		if (reinforcement > 0) {
+		if (round == 0) {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
 			sleep();
-		} else if (round >= 0) {
-			int unit = currentPlayer.getUnit(country);
-			while (unit != 0) {
+		} else if (round > 0) {
+			while (reinforcement != 0) {
 				currentPlayer.reinforce(country);
-				unit--;
+				reinforcement--;
 				sleep();
 			}
 			int count = 0;
@@ -206,19 +204,18 @@ public class RiskGame extends Observable implements Serializable {
 	// Intermediate AI set armies at threaten countries,randomly attact
 	// contries, can submit card
 	public void IntermediateMove() {
-		if (reinforcement > 0) {
+		if (round == 0) {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
 			sleep();
-		} else if (round >= 0) {
+		} else if (round > 0) {
 			Country newCountry = country.get(0);
-			currentPlayer.addCards(cards.getCard());
-			currentPlayer.AIsubmitCard();
-			int unit = currentPlayer.getUnit(country);
-			while (unit > 0) {
+			while (reinforcement != 0) {
+				currentPlayer.addCards(cards.getCard());
+				currentPlayer.AIsubmitCard();
 				currentPlayer.reinforce(country);
-				unit--;
+				reinforcement--;
 				sleep();
 			}
 			for (int i = 0; i < country.size(); i++) {
@@ -252,19 +249,18 @@ public class RiskGame extends Observable implements Serializable {
 	}
 
 	public void HardMove() {
-		if (reinforcement > 0) {
+		if (round == 0) {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
 			sleep();
 		} else if (round > 0) {
 			Country newCountry = country.get(0);
-			currentPlayer.addCards(cards.getCard());
-			currentPlayer.AIsubmitCard();
-			int unit = currentPlayer.getUnit(country);
-			while (unit > 0) {
+			while (reinforcement != 0) {
+				currentPlayer.addCards(cards.getCard());
+				currentPlayer.AIsubmitCard();
 				currentPlayer.reinforce(country);
-				unit--;
+				reinforcement--;
 				sleep();
 			}
 			for (int i = 0; i < country.size(); i++) {
@@ -314,7 +310,6 @@ public class RiskGame extends Observable implements Serializable {
 		currentCountry = null;
 		currentPlayer = null;
 		reinforcement = 0;
-		isPlay = false;
 		setChanged();
 		notifyObservers(this);
 	}

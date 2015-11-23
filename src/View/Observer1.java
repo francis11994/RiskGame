@@ -16,7 +16,9 @@ import java.util.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
+import javafx.scene.shape.MoveTo;
 import model.Country;
 import model.Player;
 import model.RiskGame;
@@ -25,17 +27,27 @@ public class Observer1 extends JPanel implements Observer {
 	List<List<Country>> AllCountry;
 	int index;
 	int round;
+	JTextArea Text;
 	List<Player> players;
 	Player currentPlayer;
 	RiskGame game;
 	Country currentCountry;
-	int reinforcement;
+	int reinforcement=0;
 	private BufferedImage map;
 	private BufferedImage bottom;
+
 	public Observer1(RiskGame Game) {
+		setLayout(null);
 		game = Game;
 		update(game);
-		setSize(800,600);
+		setSize(800, 600);
+		Text = new JTextArea("Start!");
+		add(Text);
+		Text.setFont(new Font("Arial Black", Font.BOLD, 20));
+		Text.setLocation(220, 480);
+		Text.setSize(550, 100);
+		Text.setOpaque(false);
+		Text.setFocusable(false);
 		addMouseListener(new MouseOperation());
 		addMouseMotionListener(new MouseOperation());
 		try {
@@ -53,7 +65,7 @@ public class Observer1 extends JPanel implements Observer {
 		players = game.getAllPlayer();
 		currentPlayer = game.getPlayer();
 		currentCountry = null;
-		reinforcement=game.getReinforcement();
+		reinforcement = game.getReinforcement();
 	}
 
 	@Override
@@ -65,9 +77,10 @@ public class Observer1 extends JPanel implements Observer {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(map, 0, 0, 800,700*2/3, null);
+		g2.drawImage(map, 0, 0, 800, 700 * 2 / 3, null);
 		int i = 0;
-
+		if(currentPlayer!=null && reinforcement!= 0 )
+			Text.setText(currentPlayer.getName() + "'s turn: " + reinforcement+" Solider remainning");
 		for (List<Country> countries : AllCountry) {
 			Player a = players.get(i);
 			for (Country country : countries) {
@@ -77,7 +90,7 @@ public class Observer1 extends JPanel implements Observer {
 					g2.setColor(Color.WHITE);
 					g2.setFont(new Font("Arial Black", Font.BOLD, 16));
 					if (country.getArmyCount() < 10)
-						g2.drawString("" + country.getArmyCount(), country.getX() +5, country.getY() + 20);
+						g2.drawString("" + country.getArmyCount(), country.getX() + 5, country.getY() + 20);
 					else
 						g2.drawString("" + country.getArmyCount(), country.getX(), country.getY() + 20);
 				} else {
@@ -93,7 +106,7 @@ public class Observer1 extends JPanel implements Observer {
 			}
 			i++;
 		}
-		if(reinforcement!=0){
+		if (reinforcement != 0) {
 			g2.setColor(Color.WHITE);
 			g2.fillRect(0, 260, 135, 60);
 			g2.setColor(Color.BLACK);
@@ -101,21 +114,40 @@ public class Observer1 extends JPanel implements Observer {
 			g2.drawString("reinforcement", 10, 280);
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial Black", Font.BOLD, 25));
-			g2.drawString(""+reinforcement, 50, 310);
+			g2.drawString("" + reinforcement, 50, 310);
 		}
-		
-		g2.drawImage(bottom,0,465,1200,240,null);
+
+		g2.drawImage(bottom, 0, 465, 1200, 240, null);
 	}
 
-	private class MouseOperation implements  MouseListener, MouseMotionListener {
+	private class MouseOperation implements MouseListener, MouseMotionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (currentCountry != null){
-				currentCountry.addArmys(1);
-			updateUI();
-			game.moveToNext();
-			game.play();
+			if (round == 0) {
+				if (currentCountry != null) {
+					currentCountry.addArmys(1);
+					updateUI();
+					game.moveToNext();
+					game.play();
+				}
+			} else if (round > 0) {
+				if (currentCountry != null) {
+					if (reinforcement > 0) {
+						currentCountry.addArmys(1);
+						reinforcement--;
+						updateUI();
+					} if (reinforcement == 0) {
+						//Last Part attact here
+						//Last Part attact here
+						//Last Part attact here
+						//Last Part attact here
+						
+						game.moveToNext();
+						game.play();
+					}
+				}
+
 			}
 		}
 
@@ -150,14 +182,14 @@ public class Observer1 extends JPanel implements Observer {
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			List<Country> countries = AllCountry.get(index);
-				for (Country country : countries) {
-					if (country.isLocateAt(e.getPoint())) {
-						currentCountry = country;
-						updateUI();
-						return;
-					}
+			for (Country country : countries) {
+				if (country.isLocateAt(e.getPoint())) {
+					currentCountry = country;
+					updateUI();
+					return;
 				}
-				currentCountry = null;
+			}
+			currentCountry = null;
 			updateUI();
 
 		}
