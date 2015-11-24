@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.media.jai.ColormapOpImage;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 

@@ -18,8 +18,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import javafx.scene.shape.MoveTo;
 import model.Country;
+import model.Dice;
 import model.Player;
 import model.RiskGame;
 
@@ -32,12 +32,15 @@ public class Observer1 extends JPanel implements Observer {
 	Player currentPlayer;
 	RiskGame game;
 	Country currentCountry;
-	int reinforcement=0;
+	int reinforcement = 0;
 	private BufferedImage map;
 	private BufferedImage bottom;
+	static boolean firstClick;
+	Country attackingCountry;
 
 	public Observer1(RiskGame Game) {
 		setLayout(null);
+		firstClick = true;
 		game = Game;
 		update(game);
 		setSize(800, 600);
@@ -79,8 +82,8 @@ public class Observer1 extends JPanel implements Observer {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(map, 0, 0, 800, 700 * 2 / 3, null);
 		int i = 0;
-		if(currentPlayer!=null && reinforcement!= 0 )
-			Text.setText(currentPlayer.getName() + "'s turn: " + reinforcement+" Solider remainning");
+		if (currentPlayer != null && reinforcement != 0)
+			Text.setText(currentPlayer.getName() + "'s turn: " + reinforcement + " Solider remainning");
 		for (List<Country> countries : AllCountry) {
 			Player a = players.get(i);
 			for (Country country : countries) {
@@ -124,6 +127,7 @@ public class Observer1 extends JPanel implements Observer {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+
 			if (round == 0) {
 				if (currentCountry != null) {
 					currentCountry.addArmys(1);
@@ -137,14 +141,20 @@ public class Observer1 extends JPanel implements Observer {
 						currentCountry.addArmys(1);
 						reinforcement--;
 						updateUI();
-					} if (reinforcement == 0) {
-						//Last Part attact here
-						//Last Part attact here
-						//Last Part attact here
-						//Last Part attact here
-						
-						game.moveToNext();
-						game.play();
+					}
+					if (reinforcement == 0) {
+						if (currentCountry != null) {
+
+							if (firstClick) {
+								attackingCountry = currentCountry;
+								firstClick = !firstClick;
+							} else {
+								attack(attackingCountry, currentCountry);
+								firstClick = !firstClick;
+							}
+						}
+						// game.moveToNext();
+						// game.play();
 					}
 				}
 
@@ -181,17 +191,53 @@ public class Observer1 extends JPanel implements Observer {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			List<Country> countries = AllCountry.get(index);
-			for (Country country : countries) {
-				if (country.isLocateAt(e.getPoint())) {
-					currentCountry = country;
-					updateUI();
-					return;
+			if (firstClick) {
+				List<Country> countries = AllCountry.get(index);
+				for (Country country : countries) {
+					if (country.isLocateAt(e.getPoint())) {
+						currentCountry = country;
+						updateUI();
+						return;
+					}
+				}
+				currentCountry = null;
+				updateUI();
+			} else {
+				for (Country c : attackingCountry.getNegibors(AllCountry.get(index))) {
+					if (c.isLocateAt(e.getPoint())) {
+						currentCountry = c;
+						updateUI();
+						return;
+					}
 				}
 			}
-			currentCountry = null;
-			updateUI();
 
 		}
+	}
+
+	public void attack(Country attacker, Country defender) {
+		if (attacker.getArmyCount() >= 2) {
+			Dice d = new Dice();
+			Dice a = new Dice();
+			a.roll();
+			d.roll();
+			game.attact(attacker, defender);
+			Text.setText(currentPlayer.getName() + "'s turn: " + attacker.getname() + " Rolled " + a.getNumber()
+					+ "\n the defender " + defender.getname() + " Rolled " + d.getNumber() + " \n");
+			if (a.getNumber() > d.getNumber()) {
+				defender.removeArmys(1);
+			} else {
+				attacker.removeArmys(1);
+			}
+			if (defender.getArmyCount() == 0) {
+				List<List<Country>> world = game.getAllCountry();
+				for (int i = 0; i < world.size(); i++)
+					world.get(i).remove(defender);
+				world.get(index).add(defender);
+				attacker.moveSolider(defender, 1);
+				AllCountry = world;
+			}
+		}
+		updateUI();
 	}
 }

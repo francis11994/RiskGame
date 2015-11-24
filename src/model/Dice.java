@@ -16,8 +16,8 @@ public class Dice implements Serializable{
 		number=random.nextInt(6)+1;
 	}
 	
-	public boolean isWin(Dice defenser){
-		if(number > defenser.getNumber()){
+	public boolean isWin(Dice defender){
+		if(number > defender.getNumber()){
 			return true; 
 		}else{
 			return false; 
