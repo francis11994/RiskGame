@@ -25,7 +25,7 @@ public class IntermediateAI extends Player {
 	}
 
 	@Override
-	public void reinforce( List<Country> countries) {
+	public void reinforce(List<Country> countries) {
 		for (Country a : countries)
 			if (a.isThreaten(countries)) {
 				a.addArmys(1);

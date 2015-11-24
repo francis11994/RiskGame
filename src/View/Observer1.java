@@ -202,7 +202,7 @@ public class Observer1 extends JPanel implements Observer {
 				}
 				currentCountry = null;
 				updateUI();
-			} else if(!firstClick){
+			} else if (!firstClick) {
 				for (Country c : attackingCountry.getNegibors(AllCountry.get(index))) {
 					if (c.isLocateAt(e.getPoint())) {
 						currentCountry = c;
@@ -226,7 +226,7 @@ public class Observer1 extends JPanel implements Observer {
 					+ "\n the defender " + defender.getname() + " Rolled " + d.getNumber() + " \n");
 			if (a.getNumber() > d.getNumber()) {
 				defender.removeArmys(1);
-			} else {
+			} else if (a.getNumber() < d.getNumber()) {
 				attacker.removeArmys(1);
 			}
 			if (defender.getArmyCount() == 0) {

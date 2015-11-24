@@ -23,7 +23,7 @@ public class RiskGame extends Observable implements Serializable {
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
 	public int RunTime = 0;
-	public static int  reinforcement;
+	public static int reinforcement;
 	public RiskMap map = new RiskMap();
 
 	public RiskGame() {
@@ -61,7 +61,7 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = (7 - players.size()) * 5;		///ghgfutfu
+		reinforcement = (7 - players.size()) * 5; /// ghgfutfu
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
@@ -72,20 +72,20 @@ public class RiskGame extends Observable implements Serializable {
 	// sleep
 	public void moveToNext() {
 		index++;
-			if (index >= players.size()) {
-				index = 0;
-				if(round>0)
-					round++;
-				else{
+		if (index >= players.size()) {
+			index = 0;
+			if (round > 0)
+				round++;
+			else {
 				if (reinforcement == 1)
 					round = 1;
 				if (reinforcement > 0)
 					reinforcement--;
-				}
 			}
+		}
 		currentPlayer = players.get(index);
 		country = world.get(index);
-		if(round>0 &&players.size()>1)
+		if (round > 0 && players.size() > 1)
 			reinforcement = currentPlayer.getUnit(country);
 		setChanged();
 		notifyObservers(this);
