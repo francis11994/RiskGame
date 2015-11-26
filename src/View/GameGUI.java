@@ -1,6 +1,7 @@
 
 
 
+
 package View;
 
 import java.awt.Color;
@@ -38,6 +39,7 @@ public class GameGUI extends JFrame{
 	public void layoutTheJFrame(){
 		setTitle("Risk Game");
 		setSize(SCREEN_LENGTH, SCREEN_HEIGHT);
+		setLocation(800,0);
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
@@ -47,17 +49,17 @@ public class GameGUI extends JFrame{
 		observer1=new Observer1(game);
 		game.addObserver((Observer)observer1);
 		add(observer1);
-		observer1.setLocation(0,30);
+		observer1.setLocation(0,50);
 		
 		observer2 = new Observer2(game);
 		game.addObserver(observer2);
-		observer2.setSize(800,30);
-		observer2.setLocation(50,0);
+		observer2.setSize(SCREEN_LENGTH,50);
+		observer2.setLocation(0,0);
 		add(observer2);
 	
-		Play=new JButton("Finish this turn");
+		Play=new JButton("skip");
 		observer1.add(Play);
-		Play.setSize(150,40);
+		Play.setSize(100,40);
 		Play.setLocation(10,500);
 		Play.addActionListener(new GameListener());
 	}
@@ -75,8 +77,8 @@ public class GameGUI extends JFrame{
 			if (reply == JOptionPane.NO_OPTION){
 				game.restart();
 				game.addPlayer(PlayerType.Human,"Player1",Color.BLUE);
-				game.addPlayer(PlayerType.Hard,"HardAI",Color.BLACK);
-				game.addPlayer(PlayerType.Human,"Player2",Color.GREEN);
+				game.addPlayer(PlayerType.Hard,"HardAI",Color.GREEN);
+				game.addPlayer(PlayerType.Human,"Player2",Color.BLACK);
 				game.addPlayer(PlayerType.Intermediate,"MediumAI",Color.RED);
 				game.addPlayer(PlayerType.Human,"Player3",Color.GRAY);
 				game.addPlayer(PlayerType.Beginner,"EasyAI",Color.MAGENTA);

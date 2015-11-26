@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -15,10 +17,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import javafx.scene.shape.MoveTo;
 import model.Country;
 import model.Player;
 import model.RiskGame;
@@ -27,16 +28,19 @@ public class Observer1 extends JPanel implements Observer {
 	List<List<Country>> AllCountry;
 	int index;
 	int round;
+	JButton AttactComplete;
 	JTextArea Text;
 	List<Player> players;
 	Player currentPlayer;
 	RiskGame game;
 	Country currentCountry;
-	int reinforcement=0;
+	Country attacter;
+	int reinforcement = 0;
 	private BufferedImage map;
 	private BufferedImage bottom;
 
 	public Observer1(RiskGame Game) {
+		loadImage();
 		setLayout(null);
 		game = Game;
 		update(game);
@@ -45,11 +49,21 @@ public class Observer1 extends JPanel implements Observer {
 		add(Text);
 		Text.setFont(new Font("Arial Black", Font.BOLD, 20));
 		Text.setLocation(220, 480);
-		Text.setSize(550, 100);
+		Text.setSize(400, 100);
 		Text.setOpaque(false);
 		Text.setFocusable(false);
+
 		addMouseListener(new MouseOperation());
 		addMouseMotionListener(new MouseOperation());
+		AttactComplete = new JButton("Attact Complete");
+		add(AttactComplete);
+		AttactComplete.setSize(120, 80);
+		AttactComplete.setLocation(650, 480);
+		AttactComplete.addActionListener(new MouseOperation());
+		AttactComplete.setVisible(false);
+	}
+
+	private void loadImage(){
 		try {
 			map = ImageIO.read(new File("./picture/RiskMap.PNG"));
 			bottom = ImageIO.read(new File("./picture/Box.jpeg"));
@@ -57,14 +71,12 @@ public class Observer1 extends JPanel implements Observer {
 			e.printStackTrace();
 		}
 	}
-
 	private void update(RiskGame game) {
 		AllCountry = game.getAllCountry();
 		index = game.getIndex();
 		round = game.getRound();
 		players = game.getAllPlayer();
 		currentPlayer = game.getPlayer();
-		currentCountry = null;
 		reinforcement = game.getReinforcement();
 	}
 
@@ -77,34 +89,83 @@ public class Observer1 extends JPanel implements Observer {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
+		// draw map
 		g2.drawImage(map, 0, 0, 800, 700 * 2 / 3, null);
-		int i = 0;
-		if(currentPlayer!=null && reinforcement!= 0 )
-			Text.setText(currentPlayer.getName() + "'s turn: " + reinforcement+" Solider remainning");
-		for (List<Country> countries : AllCountry) {
-			Player a = players.get(i);
-			for (Country country : countries) {
-				if (country != currentCountry) {
-					g2.setColor(a.getColor());
-					g2.fillOval(country.getX(), country.getY(), 24, 24);
+		if (attacter == null) {
+			int i = 0;
+			for (List<Country> countries : AllCountry) {
+				Player a = players.get(i);
+				for (Country country : countries) {
+					if (country != currentCountry) {
+						g2.setColor(a.getColor());
+						g2.fillOval(country.getX(), country.getY(), 24, 24);
+						g2.setColor(Color.WHITE);
+						g2.setFont(new Font("Arial Black", Font.BOLD, 16));
+						if (country.getArmyCount() < 10)
+							g2.drawString("" + country.getArmyCount(), country.getX() + 5, country.getY() + 20);
+						else
+							g2.drawString("" + country.getArmyCount(), country.getX(), country.getY() + 20);
+					} else if (country == currentCountry) {
+						g2.setColor(a.getColor());
+						g2.fillOval(country.getX() - 20, country.getY(), 35, 35);
+						g2.setColor(Color.WHITE);
+						g2.setFont(new Font("Arial Black", Font.BOLD, 24));
+						if (country.getArmyCount() < 10)
+							g2.drawString("" + country.getArmyCount(), country.getX() - 15, country.getY() + 30);
+						else
+							g2.drawString("" + country.getArmyCount(), country.getX() - 20, country.getY() + 30);
+					}
+				}
+				i++;
+			}
+		} else if (attacter != null) {
+			g2.setColor(Color.WHITE);
+			g2.fillOval(attacter.getX(), attacter.getY(), 24, 24);
+			g2.setColor(Color.BLACK);
+			g2.setFont(new Font("Arial Black", Font.BOLD, 16));
+			if (attacter.getArmyCount() < 10)
+				g2.drawString("" + attacter.getArmyCount(), attacter.getX() + 5, attacter.getY() + 20);
+			else
+				g2.drawString("" + attacter.getArmyCount(), attacter.getX(), attacter.getY() + 20);
+			List<Country> a = attacter.getNegibors(AllCountry.get(index));
+			for (Country coutr : a) {
+				if (coutr != currentCountry) {
+					g2.setColor(Color.RED);
+					g2.fillOval(coutr.getX(), coutr.getY(), 24, 24);
 					g2.setColor(Color.WHITE);
 					g2.setFont(new Font("Arial Black", Font.BOLD, 16));
-					if (country.getArmyCount() < 10)
-						g2.drawString("" + country.getArmyCount(), country.getX() + 5, country.getY() + 20);
+					if (coutr.getArmyCount() < 10)
+						g2.drawString("" + coutr.getArmyCount(), coutr.getX() + 5, coutr.getY() + 20);
 					else
-						g2.drawString("" + country.getArmyCount(), country.getX(), country.getY() + 20);
+						g2.drawString("" + coutr.getArmyCount(), coutr.getX(), coutr.getY() + 20);
 				} else {
-					g2.setColor(a.getColor());
-					g2.fillOval(country.getX() - 20, country.getY(), 35, 35);
+					g2.setColor(Color.red);
+					g2.fillOval(coutr.getX() - 20, coutr.getY(), 35, 35);
 					g2.setColor(Color.WHITE);
 					g2.setFont(new Font("Arial Black", Font.BOLD, 24));
-					if (country.getArmyCount() < 10)
-						g2.drawString("" + country.getArmyCount(), country.getX() - 15, country.getY() + 30);
+					if (coutr.getArmyCount() < 10)
+						g2.drawString("" + coutr.getArmyCount(), coutr.getX() - 15, coutr.getY() + 30);
 					else
-						g2.drawString("" + country.getArmyCount(), country.getX() - 20, country.getY() + 30);
+						g2.drawString("" + coutr.getArmyCount(), coutr.getX() - 20, coutr.getY() + 30);
 				}
 			}
-			i++;
+		}
+
+		// dialoge
+		Color color = Color.BLACK;
+		if (currentPlayer != null) {
+			color = currentPlayer.getColor();
+			Text.setForeground(color);
+			if (reinforcement != 0) {
+				Text.setText(currentPlayer.getName() + "'s turn: " + reinforcement + " Solider remainning");
+				AttactComplete.setVisible(false);
+			}
+			if (reinforcement == 0 && round > 0) {
+				Text.setText("No remainning. attacking now !!");
+				AttactComplete.setVisible(true);
+			}
+			if (attacter != null)
+				Text.setText("Choose a enmy country");
 		}
 		if (reinforcement != 0) {
 			g2.setColor(Color.WHITE);
@@ -112,7 +173,7 @@ public class Observer1 extends JPanel implements Observer {
 			g2.setColor(Color.BLACK);
 			g2.setFont(new Font("Arial Black", Font.BOLD, 15));
 			g2.drawString("reinforcement", 10, 280);
-			g2.setColor(Color.RED);
+			g2.setColor(currentPlayer.getColor());
 			g2.setFont(new Font("Arial Black", Font.BOLD, 25));
 			g2.drawString("" + reinforcement, 50, 310);
 		}
@@ -120,35 +181,40 @@ public class Observer1 extends JPanel implements Observer {
 		g2.drawImage(bottom, 0, 465, 1200, 240, null);
 	}
 
-	private class MouseOperation implements MouseListener, MouseMotionListener {
+	private class MouseOperation implements MouseListener, MouseMotionListener, ActionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (round == 0) {
-				if (currentCountry != null) {
+			if (currentCountry != null) {
+				// before playing
+				if (round == 0) {
 					currentCountry.addArmys(1);
+					currentCountry = null;
 					updateUI();
 					game.moveToNext();
 					game.play();
 				}
-			} else if (round > 0) {
-				if (currentCountry != null) {
+				// during playing
+				else if (round > 0) {
+					// add soldier
 					if (reinforcement > 0) {
-						currentCountry.addArmys(1);
-						reinforcement--;
+						game.reinforcement(currentCountry);
 						updateUI();
-					} if (reinforcement == 0) {
-						//Last Part attact here
-						//Last Part attact here
-						//Last Part attact here
-						//Last Part attact here
-						
-						game.moveToNext();
-						game.play();
+					}
+					// attact
+					else if (reinforcement == 0) {
+						if (attacter == null)
+							attacter = currentCountry;
+						else if (attacter == currentCountry)
+							attacter = null;
+						else {
+							game.attact(attacter, currentCountry);
+							attacter = null;
+						}
 					}
 				}
-
 			}
+			updateUI();
 		}
 
 		@Override
@@ -181,16 +247,34 @@ public class Observer1 extends JPanel implements Observer {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			List<Country> countries = AllCountry.get(index);
-			for (Country country : countries) {
-				if (country.isLocateAt(e.getPoint())) {
-					currentCountry = country;
-					updateUI();
-					return;
+			if (currentCountry != null)
+				if (!currentCountry.isLocateAt(e.getPoint()))
+					currentCountry = null;
+			if (currentCountry == null && AllCountry.size()!=0) {
+				List<Country> countries = null;
+				if (attacter == null) {
+					countries = AllCountry.get(index);
+					for (Country country : countries)
+						if (country.isLocateAt(e.getPoint()) && !(reinforcement == 0 && country.getArmyCount() == 1))
+							currentCountry = country;
 				}
+				if (attacter != null) {
+					if (attacter.isLocateAt(e.getPoint()))
+						currentCountry = attacter;
+					countries = attacter.getNegibors(AllCountry.get(index));
+					for (Country country : countries)
+						if (country.isLocateAt(e.getPoint()))
+							currentCountry = country;
+				}
+				updateUI();
 			}
-			currentCountry = null;
-			updateUI();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			attacter = null;
+			game.moveToNext();
+			game.play();
 
 		}
 	}

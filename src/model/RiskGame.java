@@ -23,7 +23,7 @@ public class RiskGame extends Observable implements Serializable {
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
 	public int RunTime = 0;
-	public static int  reinforcement;
+	public int  reinforcement;
 	public RiskMap map = new RiskMap();
 
 	public RiskGame() {
@@ -61,7 +61,7 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = (7 - players.size()) * 5;		///ghgfutfu
+		reinforcement = 3;		//                (10 - players.size()) * 5;
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
@@ -113,16 +113,10 @@ public class RiskGame extends Observable implements Serializable {
 			dice2.roll();
 			if (dice1.isWin(dice2)) {
 				defender.removeArmys(1);
-				// System.out.println("Attaction: " + attacter.getname() + "
-				// rolled " + dice1.getNumber() +
-				// " and " + defender.getname() + " rolled " + dice2.getNumber()
-				// + " So, " + defender.getname() + " lost 1 solider");
+				 System.out.println("rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tdefender lost 1 solider");
 			} else {
 				attacter.removeArmys(1);
-				// System.out.println("Attaction: " + attacter.getname() + "
-				// rolled " + dice1.getNumber() +
-				// " and " + defender.getname() + " rolled " + dice2.getNumber()
-				// + " So, " + attacter.getname() + " lost 1 solider");
+				 System.out.println("rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tattacker lost 1 solider");
 			}
 		}
 		if (defender.getArmyCount() == 0) {
@@ -130,7 +124,9 @@ public class RiskGame extends Observable implements Serializable {
 				world.get(i).remove(defender);
 			world.get(index).add(defender);
 			attacter.moveSolider(defender, 1);
+			System.out.println("Finally, attacer win and " + attacter.getArmyCount() + " remainning");
 		}
+		else 			System.out.println("Finally, defender win and " + defender.getArmyCount() + " remainning");
 		setChanged();
 		notifyObservers(this);
 		sleep();
@@ -341,5 +337,13 @@ public class RiskGame extends Observable implements Serializable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+	}
+
+	public void reinforcement(Country a) {
+		a.addArmys(1);
+		reinforcement--;
+		setChanged();
+		notifyObservers(this);
+		
 	}
 }
