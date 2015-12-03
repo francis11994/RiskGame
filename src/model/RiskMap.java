@@ -117,10 +117,8 @@ public class RiskMap implements Serializable {
 				AUSTRALIA++;
 			if(a.getType().equals(CountryType.SOUTHAMERICA))
 				SOUTHAMERICA++;
-			if(a.getType().equals(CountryType.EUROPE)){
-				System.out.println(a.getname());
+			if(a.getType().equals(CountryType.EUROPE))
 				EUROPE++;
-			}
 			if(a.getType().equals(CountryType.NORTHAMERICA))
 				NORTHAMERICA++;
 		}
@@ -148,7 +146,6 @@ public class RiskMap implements Serializable {
 			continents.add(CountryType.NORTHAMERICA);
 			unit +=5;
 		}
-		System.out.println(EUROPE);
 		return unit;
 	}
 	

@@ -1,8 +1,4 @@
 
-
-
-
-
 package View;
 
 import java.awt.event.WindowEvent;

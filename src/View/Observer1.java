@@ -29,6 +29,7 @@ import javax.swing.event.ChangeListener;
 
 import model.Country;
 import model.Player;
+import model.Player.PlayerType;
 import model.RiskGame;
 import model.RiskMap.CountryType;
 
@@ -45,42 +46,44 @@ public class Observer1 extends JPanel implements Observer {
 	Country MoveCountry;
 	boolean attackDone = false;
 	int reinforcement = 0;
-	private BufferedImage map;
-	private BufferedImage bottom;
+	private BufferedImage map,bottom,gameOver,win;
 	private MouseListener listener;
 	private JPanel numberBar;
 	private Timer timer;
 	private int animation;
 	private TimeListener timeListener;
+
 	public Observer1(RiskGame Game) {
 		loadImage();
 		setLayout(null);
 		game = Game;
 		update(game);
 		setSize(800, 650);
-		listener=new MouseOperation();
+		listener = new MouseOperation();
 		addMouseListener(listener);
-		addMouseMotionListener((MouseMotionListener)listener);
+		addMouseMotionListener((MouseMotionListener) listener);
 		AttactComplete = new JButton("Attact Completed");
 		add(AttactComplete);
 		AttactComplete.setSize(120, 80);
 		AttactComplete.setLocation(650, 480);
-		AttactComplete.addActionListener((ActionListener)listener);
+		AttactComplete.addActionListener((ActionListener) listener);
 		AttactComplete.setVisible(false);
 		numberBar = new JPanel();
 		numberBar.setVisible(false);
-		numberBar.setSize(400,200);
-		numberBar.setLocation(200,200);
+		numberBar.setSize(400, 200);
+		numberBar.setLocation(200, 200);
 		setNumberBar();
 		add(numberBar);
-		timeListener = new TimeListener();
-		timer=new Timer(100,timeListener);
+		timeListener = new TimeListener(50,0);
+		timer = new Timer(100, timeListener);
 	}
 
 	private void loadImage() {
 		try {
 			map = ImageIO.read(new File("./picture/RiskMap.PNG"));
 			bottom = ImageIO.read(new File("./picture/Box.jpeg"));
+			gameOver = ImageIO.read(new File("./picture/gameOver.png"));
+			win = ImageIO.read(new File("./picture/Win.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -98,7 +101,7 @@ public class Observer1 extends JPanel implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		update((RiskGame) o);
-		updateUI();
+		updateUI();	
 	}
 
 	public void paintComponent(Graphics g) {
@@ -214,6 +217,8 @@ public class Observer1 extends JPanel implements Observer {
 		}
 
 		// dialogue
+		if(!(AllCountry!=null&&AllCountry.size()==1)){
+			
 		String str1, str2;
 		if (reinforcement != 0) {
 			str1 = "select a territory to reinforce with additional units. ";
@@ -229,10 +234,12 @@ public class Observer1 extends JPanel implements Observer {
 		} else if (attacter == null) {
 			str1 = "Select a territory to attack from or press the ";
 			str2 = "Attacks Completed button.";
+			if(currentPlayer.getType().equals(PlayerType.Human))
 			AttactComplete.setVisible(true);
 		} else {
 			str1 = "Select a territory to attact from " + attacter.getname();
 			str2 = "";
+			if(currentPlayer.getType().equals(PlayerType.Human))
 			AttactComplete.setVisible(true);
 		}
 		g2.setColor(Color.BLACK);
@@ -242,28 +249,35 @@ public class Observer1 extends JPanel implements Observer {
 		g2.setFont(new Font("Consolas", Font.PLAIN, 18));
 		g2.drawString(str1, 150, 500);
 		g2.drawString(str2, 150, 520);
-		
-		//animation
-		if(timer.isRunning()){
+		}
+
+		// animation
+		if (timer.isRunning()) {
 			List<CountryType> temp = game.getMap().getCountinent();
-			//extra continents unit
-			if(temp!=null &&temp.size()>0){
+			// extra continents unit
+			if (temp != null && temp.size() > 0) {
 				g2.setFont(new Font("Consolas", Font.PLAIN, 30));
 				g2.setColor(Color.WHITE);
-				if(temp.contains(CountryType.NORTHAMERICA))
-					g2.drawString("+ 5 extra unit", 30, 180-animation);
-				if(temp.contains(CountryType.SOUTHAMERICA))
-					g2.drawString("+ 2 extra unit", 60, 390-animation);
-				if(temp.contains(CountryType.ASIA))
-					g2.drawString("+ 7 extra unit", 520, 200-animation);
-				if(temp.contains(CountryType.AFRICA))
-					g2.drawString("+ 3 extra unit", 290, 400-animation);
-				if(temp.contains(CountryType.AUSTRALIA))
-					g2.drawString("+ 2 extra unit", 570, 420-animation);
-				if(temp.contains(CountryType.EUROPE))
-					g2.drawString("+ 3 extra unit", 300, 180-animation);
-				
-			}
+				if (temp.contains(CountryType.NORTHAMERICA))
+					g2.drawString("+ 5 extra unit", 30, 180 - animation);
+				if (temp.contains(CountryType.SOUTHAMERICA))
+					g2.drawString("+ 2 extra unit", 60, 390 - animation);
+				if (temp.contains(CountryType.ASIA))
+					g2.drawString("+ 7 extra unit", 520, 200 - animation);
+				if (temp.contains(CountryType.AFRICA))
+					g2.drawString("+ 3 extra unit", 290, 400 - animation);
+				if (temp.contains(CountryType.AUSTRALIA))
+					g2.drawString("+ 2 extra unit", 570, 420 - animation);
+				if (temp.contains(CountryType.EUROPE))
+					g2.drawString("+ 3 extra unit", 300, 180 - animation);
+
+			}			
+		}
+		if(AllCountry!=null&&AllCountry.size()==1){
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Consolas", Font.BOLD,120));											
+			g2.drawString(currentPlayer.getName(),200,150);
+			g2.drawImage(win, 200, 160, 500,250,null);
 		}
 	}
 
@@ -296,15 +310,14 @@ public class Observer1 extends JPanel implements Observer {
 								attacter = null;
 							else {
 								game.attact(attacter, currentCountry);
-								if(AllCountry.get(index).contains(currentCountry)){
+								if (AllCountry.get(index).contains(currentCountry)) {
 									stop();
-									setNumber(attacter.getArmyCount()-1);
-									fromCountry(attacter,currentCountry);
+									setNumber(attacter.getArmyCount() - 1);
+									fromCountry(attacter, currentCountry);
 									numberBar.setVisible(true);
-								}
-								else 
-								attacter=null;
-									
+								} else
+									attacter = null;
+
 							}
 						} else {
 							if (MoveCountry == null)
@@ -313,8 +326,8 @@ public class Observer1 extends JPanel implements Observer {
 								MoveCountry = null;
 							else {
 								stop();
-								fromCountry(MoveCountry,currentCountry);
-								setNumber(MoveCountry.getArmyCount()-1);
+								fromCountry(MoveCountry, currentCountry);
+								setNumber(MoveCountry.getArmyCount() - 1);
 								numberBar.setVisible(true);
 							}
 						}
@@ -356,7 +369,7 @@ public class Observer1 extends JPanel implements Observer {
 		public void mouseMoved(MouseEvent e) {
 			if (currentCountry != null && !currentCountry.isLocateAt(e.getPoint()))
 				currentCountry = null;
-			if (AllCountry.size() != 0) {
+			if (AllCountry.size() >1) {
 				List<Country> countries = null;
 				if (attacter == null && MoveCountry == null) {
 					for (Country country : AllCountry.get(index)) {
@@ -385,9 +398,9 @@ public class Observer1 extends JPanel implements Observer {
 							currentCountry = country;
 					}
 				}
-				
-				updateUI();
 			}
+
+			updateUI();
 		}
 
 		@Override
@@ -409,112 +422,119 @@ public class Observer1 extends JPanel implements Observer {
 		}
 
 	}
-		JLabel min, max, str;
-		JButton yes, no;
-		JSlider slider;
-		int from,to;
-		public void setNumberBar(){
-			numberBar.setLayout(new BorderLayout());
-			slider= new JSlider(1,1);
-			numberBar.add(slider,BorderLayout.CENTER);
-			max= new JLabel("To");
-			min = new JLabel("From");
-			str= new JLabel("Player moving units");
-			yes = new JButton("YES");
-			no = new JButton("NO");
-			numberBar.add(min, BorderLayout.WEST);
-			numberBar.add(max, BorderLayout.EAST);
-			numberBar.add(str, BorderLayout.NORTH);
-			numberBar.add(yes,BorderLayout.SOUTH);
-//			numberBar.add(no,BorderLayout.SOUTH);
-			yes.addActionListener(new yesListener());
-			no.addActionListener(new noListener());;
-			slider.addChangeListener(new sliderListener());
+
+	JLabel min, max, str;
+	JButton yes, no;
+	JSlider slider;
+	int from, to;
+
+	public void setNumberBar() {
+		numberBar.setLayout(new BorderLayout());
+		slider = new JSlider(1, 1);
+		numberBar.add(slider, BorderLayout.CENTER);
+		max = new JLabel("To");
+		min = new JLabel("From");
+		str = new JLabel("Player moving units");
+		yes = new JButton("YES");
+		no = new JButton("NO");
+		numberBar.add(min, BorderLayout.WEST);
+		numberBar.add(max, BorderLayout.EAST);
+		numberBar.add(str, BorderLayout.NORTH);
+		numberBar.add(yes, BorderLayout.SOUTH);
+		// numberBar.add(no,BorderLayout.SOUTH);
+		yes.addActionListener(new yesListener());
+		no.addActionListener(new noListener());
+		;
+		slider.addChangeListener(new sliderListener());
+	}
+
+	public void stop() {
+		removeMouseMotionListener((MouseMotionListener) listener);
+	}
+
+	public void resume() {
+		addMouseMotionListener((MouseMotionListener) listener);
+	}
+
+	public void setNumber(int a) {
+		slider.setMinimum(0);
+		slider.setMaximum(a);
+		slider.setValue(0);
+		updateUI();
+	}
+
+	public void fromCountry(Country From, Country To) {
+		from = From.getArmyCount();
+		to = To.getArmyCount();
+		min.setText("From: " + from);
+		max.setText("To " + to);
+		str.setText("Player moving units from " + From.getname() + " to " + To.getname());
+		updateUI();
+	}
+
+	public void ShowContinentUnit() {
+		if (timer != null)
+			timer.stop();
+		timeListener = new TimeListener(50,0);
+		timer = new Timer(100, timeListener);
+		timer.start();
+	}
+
+	public class sliderListener implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			min.setText("From " + (from - slider.getValue()));
+			max.setText("To " + (to + slider.getValue()));
 		}
-		
-		public void stop(){
-			removeMouseMotionListener((MouseMotionListener) listener);
+
+	}
+
+	public class yesListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			numberBar.setVisible(false);
+			if (MoveCountry != null) {
+				MoveCountry.moveSolider(currentCountry, slider.getValue());
+				AttactComplete.doClick();
+			} else {
+				attacter.moveSolider(currentCountry, slider.getValue());
+				attacter = null;
+			}
+			resume();
 		}
-		
-		public void resume(){
+
+	}
+
+	public class noListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			numberBar.setVisible(false);
 			addMouseMotionListener((MouseMotionListener) listener);
 		}
-		public void setNumber(int a){
-			slider.setMinimum(0);
-			slider.setMaximum(a);
-			slider.setValue(0);
-			updateUI();
+
+	}
+
+	public class TimeListener implements ActionListener {
+		private int i;
+
+		public TimeListener(int a,int b) {
+			animation = b;
+			i = a;
 		}
-		
-		public void fromCountry(Country From, Country To){
-			from=From.getArmyCount();
-			to=To.getArmyCount();
-			min.setText("From: "+from);
-			max.setText("To "+to);
-			str.setText("Player moving units from " + From.getname()+" to "+ To.getname());
-			updateUI();
-		}
-		
-		public void ShowContinentUnit(){
-			if(timer!=null)
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (i > 0) {
+				i--;
+				animation += 2;
+			} else {
 				timer.stop();
-			timeListener = new TimeListener();
-			timer=new Timer(100,timeListener);
-			timer.start();
+			}
+			updateUI();
 		}
-		
-		public class sliderListener implements ChangeListener{
+	}
 
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				min.setText("From "+(from-slider.getValue()));
-				max.setText("To "+(to+slider.getValue()));
-			}
-			
-		}
-		public class yesListener implements ActionListener{
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				numberBar.setVisible(false);
-				if(MoveCountry!=null){
-					MoveCountry.moveSolider(currentCountry, slider.getValue());
-					AttactComplete.doClick();
-			}
-				else{ attacter.moveSolider(currentCountry,slider.getValue());
-						attacter = null;
-				}
-				resume();
-			}
-			
-		}
-		public class noListener implements ActionListener{
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				numberBar.setVisible(false);
-				addMouseMotionListener((MouseMotionListener) listener);
-			}
-			
-		}
-		
-		public class TimeListener implements ActionListener{
-			private int i;
-			public TimeListener(){
-				animation=0;
-				i=50;
-			}
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(i>0){
-					i--;
-					animation+=2;
-				}
-				else {timer.stop();
-				animation=0;
-				}
-				updateUI();
-				}
-			}
-			
 }

@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 
 import model.BeginnerAI;
 import model.HardAI;
@@ -47,15 +49,19 @@ public class MainMenu extends JPanel {
 	private Point currentMouse;
 	private List<Player> players;
 	private BufferedImage background, volumnOpen, volumnMute, menuBackground;
-	private JPanel playerSelection,gameMenu;
+	private JPanel playerSelection, gameMenu;
 	private JLabel player1, player2, player3, player4, player5, player6;
 	private JComboBox type1, type2, type3, type4, type5, type6;
-	private JLabel name1, name2, name3, name4, name5, name6;
-	private JButton menu,restart,loadGame, save,sound, menuDone ;
+	private JLabel name1, name2, name3, name4, name5, name6, a, b, c, d, e, f;
+	private JButton menu, restart, loadGame, save, sound, menuDone;
 	private JTextArea about;
+	private int runTime;
+	private Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 	private boolean isSounding = true;
 
 	public MainMenu() {
+		runTime = 300;
+
 		currentMouse = new Point(0, 0);
 		game = null;
 		isGaming = false;
@@ -81,7 +87,7 @@ public class MainMenu extends JPanel {
 		playerSelection.setSize(500, 400);
 		playerSelection.setLocation(120, 80);
 		playerSelection.setBackground(Color.WHITE);
-		FlowLayout layout = new FlowLayout(3, 70, 35);
+		FlowLayout layout = new FlowLayout(3, 70, 20);
 		playerSelection.setLayout(layout);
 		player1 = new JLabel("Player1");
 		player2 = new JLabel("Player2");
@@ -108,6 +114,13 @@ public class MainMenu extends JPanel {
 		name4 = new JLabel("        ");
 		name5 = new JLabel("        ");
 		name6 = new JLabel("        ");
+		a = new JLabel("Runtime:");
+		b = new JLabel("0.1 secound");
+		c = new JLabel("0.3 secound");
+		c.setBorder(border);
+		d = new JLabel("0.5 second");
+		e = new JLabel("1.0 second");
+		f = new JLabel("1.5 second");
 
 		playerSelection.add(player1);
 		playerSelection.add(type1);
@@ -127,6 +140,12 @@ public class MainMenu extends JPanel {
 		playerSelection.add(player6);
 		playerSelection.add(type6);
 		playerSelection.add(name6);
+		playerSelection.add(a);
+		playerSelection.add(b);
+		playerSelection.add(c);
+		playerSelection.add(d);
+		playerSelection.add(e);
+		playerSelection.add(f);
 		playerSelection.setVisible(false);
 		add(playerSelection);
 
@@ -146,64 +165,64 @@ public class MainMenu extends JPanel {
 		about.setOpaque(false);
 		about.setFocusable(false);
 		add(about);
-		
+
 		menu = new JButton("Menu");
 		menu.setSize(130, 50);
 		menu.setLocation(10, 550);
 		menu.addActionListener(new MenuListener());
-		gameMenu=new JPanel();
-		gameMenu.setLocation(230,60);
-		gameMenu.setSize(350,400);
+		gameMenu = new JPanel();
+		gameMenu.setLocation(230, 60);
+		gameMenu.setSize(350, 400);
 		gameMenu.setVisible(false);
 		gameMenu.setLayout(null);
 		gameMenu.setBackground(Color.black);
-		
-	//	restart,loadGame, save,sound, menuDone
-		restart=new JButton("restart");
+
+		// restart,loadGame, save,sound, menuDone
+		restart = new JButton("restart");
 		restart.setFont(new Font("Consolas", Font.PLAIN, 30));
-		restart.setSize(200,50);
-		restart.setLocation(80,30);
+		restart.setSize(200, 50);
+		restart.setLocation(80, 30);
 		restart.addActionListener(new RestartListener());
 
-		loadGame=new JButton("Load Game");
+		loadGame = new JButton("Load Game");
 		loadGame.setFont(new Font("Consolas", Font.PLAIN, 30));
-		loadGame.setSize(200,50);
-		loadGame.setLocation(80,100);
+		loadGame.setSize(200, 50);
+		loadGame.setLocation(80, 100);
 		loadGame.addActionListener(new LoadGameListener());
 
-		save=new JButton("Save Game");
+		save = new JButton("Save Game");
 		save.setFont(new Font("Consolas", Font.PLAIN, 30));
-		save.setSize(200,50);
-		save.setLocation(80,170);
+		save.setSize(200, 50);
+		save.setLocation(80, 170);
 		save.addActionListener(new SaveGameListener());
-		
-		if(isSounding)
-		sound=new JButton("Sound: ON");
-		else sound=new JButton("Sound: OFF");
+
+		if (isSounding)
+			sound = new JButton("Sound: ON");
+		else
+			sound = new JButton("Sound: OFF");
 		sound.setFont(new Font("Consolas", Font.PLAIN, 30));
-		sound.setSize(200,50);
-		sound.setLocation(80,240);
+		sound.setSize(200, 50);
+		sound.setLocation(80, 240);
 		sound.addActionListener(new GameSoundListener());
-		
-		menuDone=new JButton("Done");
+
+		menuDone = new JButton("Done");
 		menuDone.setFont(new Font("Consolas", Font.PLAIN, 30));
-		menuDone.setSize(100,50);
-		menuDone.setLocation(130,330);
+		menuDone.setSize(100, 50);
+		menuDone.setLocation(130, 330);
 		menuDone.addActionListener(new MenuDoneListener());
-		
+
 		gameMenu.add(restart);
 		gameMenu.add(loadGame);
 		gameMenu.add(save);
 		gameMenu.add(sound);
 		gameMenu.add(menuDone);
-		
-		
+
 	}
 
-	public boolean isGaming(){
+	public boolean isGaming() {
 		return isGaming;
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		if (!isGaming) {
 			super.paintComponent(g);
@@ -271,16 +290,16 @@ public class MainMenu extends JPanel {
 			fos.close();
 		} catch (Exception a) {
 		}
-		if (game == null || (game.getRound()==0&&game.getReinforcement()==0)) {
+		if (game == null || (game.getRound() == 0 && game.getReinforcement() == 0)) {
 			JOptionPane.showMessageDialog(null, "No previous record. Please start a new game");
-			game=null;
-		}
-		else
-		GameBegin();
+			game = null;
+		} else
+			GameBegin();
 	}
 
 	public void GameBegin() {
 		isGaming = true;
+		game.setRuntime(runTime);
 		playerSelection.setVisible(false);
 		type1.setSelectedIndex(0);
 		type2.setSelectedIndex(0);
@@ -303,6 +322,7 @@ public class MainMenu extends JPanel {
 		observer2.setSize(GameGUI.SCREEN_LENGTH, 50);
 		observer2.setLocation(0, 0);
 		add(observer2);
+		game.play();
 		updateUI();
 	}
 
@@ -414,10 +434,34 @@ public class MainMenu extends JPanel {
 		}
 	}
 
+	public boolean isB(Point a){
+		return (310 < a.getX() && a.getX() < 395) && (380 < a.getY() && a.getY() < 400);
+	}
+	public boolean isC(Point a){
+		return (450 < a.getX() && a.getX() < 550) && (370 < a.getY() && a.getY() < 400);
+	}
+	public boolean isD(Point a){
+		return (185 < a.getX() && a.getX() < 265) && (415 < a.getY() && a.getY() < 436);
+	}
+	public boolean isE(Point a){
+		return (318 < a.getX() && a.getX() < 408) && (414 < a.getY() && a.getY() < 442);
+	}
+	public boolean isF(Point a){
+		return (460 < a.getX() && a.getX() < 550) && (415 < a.getY() && a.getY() < 435);
+	}
+	
+	public void cleanRunTime(){
+		b.setBorder(null);
+		c.setBorder(null);
+		d.setBorder(null);
+		e.setBorder(null);
+		f.setBorder(null);
+	}
 	public class MouseOperation implements MouseMotionListener, MouseListener {
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e1) {
+			
 			if (isSound(currentMouse)) {
 				if (isSounding)
 					isSounding = false;
@@ -446,13 +490,37 @@ public class MainMenu extends JPanel {
 					for (Player a : players)
 						game.addPlayer(a);
 					game.randomSetCountry(new RiskMap().getAllCountry());
-					game.play();
 					GameBegin();
 				}
 			}
 			if (game != null && isBack(currentMouse)) {
 				game = null;
 				playerSelection.setVisible(false);
+			}
+			if (game != null && isB(currentMouse)) {
+				cleanRunTime();
+				b.setBorder(border);
+				runTime=300;
+			}
+			if (game != null && isC(currentMouse)) {
+				cleanRunTime();
+				c.setBorder(border);
+				runTime=500;
+			}
+			if (game != null && isD(currentMouse)) {
+				cleanRunTime();
+				d.setBorder(border);
+				runTime=1000;
+			}
+			if (game != null && isE(currentMouse)) {
+				cleanRunTime();
+				e.setBorder(border);
+				runTime=1500;
+			}
+			if (game != null && isF(currentMouse)) {
+				cleanRunTime();
+				f.setBorder(border);
+				runTime=2500;
 			}
 			updateUI();
 		}
@@ -571,55 +639,55 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int reply = JOptionPane.showConfirmDialog(null, "Do you want to restart?", null, JOptionPane.YES_NO_OPTION);	
-			if (reply == JOptionPane.YES_OPTION){
-			remove(observer1);
-			remove(observer2);
-			gameMenu.setVisible(false);
-			game = null;
-			isGaming = false;
-			addMouseListener(mouseListener);
-			addMouseMotionListener(mouseListener);
-			updateUI();
+			int reply = JOptionPane.showConfirmDialog(null, "Do you want to restart?", null, JOptionPane.YES_NO_OPTION);
+			if (reply == JOptionPane.YES_OPTION) {
+				remove(observer1);
+				remove(observer2);
+				gameMenu.setVisible(false);
+				game = null;
+				isGaming = false;
+				addMouseListener(mouseListener);
+				addMouseMotionListener(mouseListener);
+				updateUI();
 			}
 		}
 
 	}
 
-	public class SaveGameListener implements ActionListener{
+	public class SaveGameListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int reply = JOptionPane.showConfirmDialog(null, "Do you want to save", null, JOptionPane.YES_NO_OPTION);	
-			if (reply == JOptionPane.YES_OPTION){
+			int reply = JOptionPane.showConfirmDialog(null, "Do you want to save", null, JOptionPane.YES_NO_OPTION);
+			if (reply == JOptionPane.YES_OPTION) {
 				try {
 					FileOutputStream fos = new FileOutputStream("myFile");
 					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject((RiskGame)game);	
+					oos.writeObject((RiskGame) game);
 					oos.close();
 					fos.close();
 				} catch (Exception e1) {
-				}		
-			
-		}
+				}
+
+			}
 		}
 	}
-	
-	public class MenuDoneListener implements ActionListener{
+
+	public class MenuDoneListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			gameMenu.setVisible(false);
 			observer1.resume();
 		}
-		
+
 	}
-	
-	public class LoadGameListener implements ActionListener{
+
+	public class LoadGameListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			RiskGame temp=new RiskGame();
+			RiskGame temp = new RiskGame();
 			try {
 				FileInputStream fos = new FileInputStream("myFile");
 				ObjectInputStream oos = new ObjectInputStream(fos);
@@ -628,52 +696,52 @@ public class MainMenu extends JPanel {
 				fos.close();
 			} catch (Exception a) {
 			}
-			if (temp == null || (temp.getRound()==0&&temp.getReinforcement()==0)) 
+			if (temp == null || (temp.getRound() == 0 && temp.getReinforcement() == 0))
 				JOptionPane.showMessageDialog(null, "No previous record.");
-			else{
-			int reply = JOptionPane.showConfirmDialog(null, "Do you want to load game", null, JOptionPane.YES_NO_OPTION);	
-			if (reply == JOptionPane.YES_OPTION){
-				game=temp;
-				remove(observer1);
-				remove(observer2);
-				gameMenu.setVisible(false);
-				GameBegin();
+			else {
+				int reply = JOptionPane.showConfirmDialog(null, "Do you want to load game", null,
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					game = temp;
+					remove(observer1);
+					remove(observer2);
+					gameMenu.setVisible(false);
+					GameBegin();
+				}
 			}
 		}
-		}
-		
+
 	}
-	
-	public class GameSoundListener implements ActionListener{
+
+	public class GameSoundListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(isSounding){
-				isSounding=false;
+			if (isSounding) {
+				isSounding = false;
 				sound.setText("Sound: OFF");
-			}
-			else {
-				isSounding =true;
+			} else {
+				isSounding = true;
 				sound.setText("Sound: ON");
 			}
 		}
-		
+
 	}
-	public class MenuListener implements ActionListener{
+
+	public class MenuListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!gameMenu.isVisible()){
-			gameMenu.setVisible(true);
-			observer1.stop();
-			}
-			else{ gameMenu.setVisible(false);
+			if (!gameMenu.isVisible()) {
+				gameMenu.setVisible(true);
+				observer1.stop();
+			} else {
+				gameMenu.setVisible(false);
 				observer1.resume();
 			}
-			
+
 		}
-		
+
 	}
 
-	
 }

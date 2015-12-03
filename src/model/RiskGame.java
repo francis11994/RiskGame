@@ -2,11 +2,15 @@
 package model;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Random;
+
+import javax.swing.Timer;
 
 import model.Player.PlayerType;
 import model.RiskMap.CountryType;
@@ -25,6 +29,7 @@ public class RiskGame extends Observable implements Serializable {
 	private Dice dice2 = new Dice();
 	private int RunTime = 0;
 	private int reinforcement = 0;
+	private Timer timer;
 
 	public RiskMap map = new RiskMap();
 
@@ -43,8 +48,6 @@ public class RiskGame extends Observable implements Serializable {
 		players.add(currentPlayer);
 		country = new ArrayList<Country>();
 		world.add(country);
-		setChanged();
-		notifyObservers(this);
 	}
 
 	public void randomSetCountry(List<Country> countries) {
@@ -57,8 +60,6 @@ public class RiskGame extends Observable implements Serializable {
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
-		setChanged();
-		notifyObservers(this);
 	}
 
 	// sleep
@@ -79,28 +80,20 @@ public class RiskGame extends Observable implements Serializable {
 		country = world.get(index);
 		if (round > 0 && players.size() > 1) 
 			reinforcement = currentPlayer.getUnit(country)+map.getExtraUnit(country);
-	
-		setChanged();
-		notifyObservers(this);
 	}
 
 	public void play() {
-		while (!currentPlayer.getType().equals(PlayerType.Human) && players.size() > 1) {
-
-			sleep();
 			if (currentPlayer.getType().equals(PlayerType.Beginner))
 				BeginnerMove();
-			if (currentPlayer.getType().equals(PlayerType.Intermediate)) {
+			if (currentPlayer.getType().equals(PlayerType.Intermediate)) 
 				IntermediateMove();
-			}
 			if (currentPlayer.getType().equals(PlayerType.Hard))
 				HardMove();
+			setChanged();
+			notifyObservers(this);
 			CheckWinner();
-			moveToNext();
-		}
 	}
 
-	// sleep
 	public void attact(Country attacter, Country defender) {
 		while (attacter.getArmyCount() > 1 && defender.getArmyCount() > 0) {
 			dice1.roll();
@@ -126,7 +119,6 @@ public class RiskGame extends Observable implements Serializable {
 			System.out.println("Finally, defender win and " + defender.getArmyCount() + " remainning");
 		setChanged();
 		notifyObservers(this);
-		sleep();
 
 		// removeLostPlayer
 		int number = -1;
@@ -140,23 +132,26 @@ public class RiskGame extends Observable implements Serializable {
 				index--;
 			setChanged();
 			notifyObservers(this);
-			sleep();
 			CheckWinner();
 		}
 	}
 
 	private void CheckWinner() {
-		if (round > 150) {
+		if (round > 99) {
 			for (int i = 0; i < world.size() - 1; i++) {
 				if (world.get(i).size() < world.get(i + 1).size()) {
+					world.get(i+1).addAll(world.get(i));
 					world.remove(i);
 					players.remove(i);
 					i--;
 				} else {
+					world.get(i).addAll(world.get(i+1));
 					world.remove(i + 1);
 					players.remove(i + 1);
 				}
 			}
+			setChanged();
+			notifyObservers(this);
 		}
 	}
 
@@ -167,28 +162,38 @@ public class RiskGame extends Observable implements Serializable {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
-			sleep();
+			sleep();																						//sleep
+			return;
 		} else if (round > 0) {
-			while (reinforcement != 0) {
+			if (reinforcement > 0) {
 				currentPlayer.reinforce(country);
 				reinforcement--;
-				sleep();
+				setChanged();
+				notifyObservers(this);
+				sleep();																				//sleep
+				return;
 			}
-			int count = 0;
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
 				List<Country> neighbors = attacter.getEnemyNegibors(country);
 				for (int n = 0; n < neighbors.size(); n++) {
 					Country neighbor = neighbors.get(n);
-					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 3) {
+					if (attacter.getArmyCount() > 1 && !country.contains(neighbor)) {
+						attact(attacter, neighbor);																				//sleep
+						if (!country.contains(neighbor)){
+							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);																				//sleep
+						}
+						setChanged();
+						notifyObservers(this);
 						sleep();
-						attact(attacter, neighbor);
-						if (!country.contains(neighbor))
-							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
-						count++;
+						return;
 					}
 				}
 			}
+		}
+		if (players.size() > 1) {
+		moveToNext();
+		play();
 		}
 	}
 
@@ -199,15 +204,18 @@ public class RiskGame extends Observable implements Serializable {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
-			sleep();
+			sleep();																						//sleep
+			return;
 		} else if (round > 0) {
 			Country newCountry = country.get(0);
 			currentPlayer.addCards(cards.getCard());
-			while (reinforcement != 0) {
-				currentPlayer.AIsubmitCard();
+			if (reinforcement > 0) {
 				currentPlayer.reinforce(country);
 				reinforcement--;
-				sleep();
+				setChanged();
+				notifyObservers(this);
+				sleep();																				//sleep
+				return;
 			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
@@ -218,19 +226,20 @@ public class RiskGame extends Observable implements Serializable {
 						if (country.contains(neighbor)) {
 							newCountry = neighbor;
 							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
-							setChanged();
-							notifyObservers(this);
-							sleep();
 						}
-
+						setChanged();
+						notifyObservers(this);
+						sleep();																						//sleep
+						return;
 					}
 				}
 			}
 			// reinforcement
 
-			setChanged();
-			notifyObservers(this);
-			sleep();
+			if (players.size() > 1) {
+				moveToNext();
+				play();
+		}
 		}
 	}
 
@@ -239,15 +248,18 @@ public class RiskGame extends Observable implements Serializable {
 			currentPlayer.reinforce(country);
 			setChanged();
 			notifyObservers(this);
-			sleep();
+			sleep();																						//sleep
+			return;
 		} else if (round > 0) {
 			Country newCountry = country.get(0);
 			currentPlayer.addCards(cards.getCard());
-			while (reinforcement != 0) {
-				currentPlayer.AIsubmitCard();
+			if (reinforcement > 0) {
 				currentPlayer.reinforce(country);
 				reinforcement--;
-				sleep();
+				setChanged();
+				notifyObservers(this);
+				sleep();																				//sleep
+				return;
 			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
@@ -258,24 +270,20 @@ public class RiskGame extends Observable implements Serializable {
 						if (country.contains(neighbor)) {
 							newCountry = neighbor;
 							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
-							setChanged();
-							notifyObservers(this);
-							sleep();
 						}
-
+						setChanged();
+						notifyObservers(this);
+						sleep();																						//sleep
+						return;
 					}
 				}
 			}
 			// reinforcement
-			Country LargestArmy = country.get(0);
-			for (Country temp : country) {
-				if (LargestArmy.getArmyCount() < temp.getArmyCount())
-					LargestArmy = temp;
-			}
-			LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
-			setChanged();
-			notifyObservers(this);
-			sleep();
+
+			if (players.size() > 1) {
+				moveToNext();
+				play();
+		}
 		}
 	}
 
@@ -320,15 +328,6 @@ public class RiskGame extends Observable implements Serializable {
 		return index;
 	}
 
-	private void sleep() {
-		if (RunTime != 0)
-			try {
-				Thread.sleep(RunTime);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-	}
-
 	public void reinforcement(Country a) {
 		a.addArmys(1);
 		reinforcement--;
@@ -340,5 +339,39 @@ public class RiskGame extends Observable implements Serializable {
 	public RiskMap getMap(){
 		return map;
 	}
-
+	
+	public void sleep() {
+			timer=new Timer(10,new TimerListener());
+			timer.start();
+	}
+	
+	public class TimerListener implements ActionListener{
+		int count=0;
+		public TimerListener(){
+			count = 0;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(10*count<RunTime)
+				count++;
+			else {
+				count=0;
+				timer.stop();
+				if(round==0){
+					moveToNext();
+					play();
+				}
+				else if (currentPlayer.getType().equals(PlayerType.Beginner))
+					BeginnerMove();
+				else if (currentPlayer.getType().equals(PlayerType.Intermediate)) 
+					IntermediateMove();
+				else if (currentPlayer.getType().equals(PlayerType.Hard))
+					HardMove();
+			}
+			
+		}
+		
+	}
+	
+	
 }
