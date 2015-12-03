@@ -56,14 +56,11 @@ public class Observer2 extends JPanel implements Observer{
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		if(players.size()>0){
-			g2.drawImage(boardTwo, 0,0,800,50, null);
 			int Length = (GameGUI.SCREEN_LENGTH -50) / players.size();
 			int index = 0;
 			for(Player a:players){
 				if(a==currentPlayer)
 					g2.drawImage(boardOne, 25+index * Length, 0, Length, 50, null);
-//				else 
-//					g2.drawImage(boardTwo, 25+index * Length, 0, Length, 50, null);
 				g2.setColor(a.getColor());
 				g2.drawString(a.getName(), 25+Length *index + 15, 35);
 				index++;

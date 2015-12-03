@@ -2,41 +2,35 @@
 
 
 
+
 package View;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Observer;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import model.Player.PlayerType;
+
 import model.RiskGame;
-import model.RiskMap;
+
 
 public class GameGUI extends JFrame{
 	public static void main(String[] args){
 		new GameGUI().setVisible(true);
 	}
 	public static int SCREEN_LENGTH = 800;
-	public static int SCREEN_HEIGHT = 650;
-	private RiskGame game;
-	private Observer1 observer1;
-	private Observer2 observer2;
+	public static int SCREEN_HEIGHT = 700;
+	private MainMenu mainMenu;
+	
 	public GameGUI(){
 		layoutTheJFrame();
-		setUpModelAndObservers();
-		registerListeners();
+		SetUpModelAndObserver();
 	}
 	
-	public void layoutTheJFrame(){
+	private void layoutTheJFrame(){
 		setTitle("Risk Game");
 		setSize(SCREEN_LENGTH, SCREEN_HEIGHT);
 		setLocation(800,0);
@@ -44,52 +38,23 @@ public class GameGUI extends JFrame{
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	}
 	
-	public void setUpModelAndObservers(){
-		Load();
-		observer1=new Observer1(game);
-		game.addObserver((Observer)observer1);
-		add(observer1);
-		observer1.setLocation(0,50);
-		
-		observer2 = new Observer2(game);
-		game.addObserver(observer2);
-		observer2.setSize(SCREEN_LENGTH,50);
-		observer2.setLocation(0,0);
-		add(observer2);
-	
-		Play=new JButton("skip");
-		observer1.add(Play);
-		Play.setSize(100,40);
-		Play.setLocation(10,500);
-		Play.addActionListener(new GameListener());
-	}
-	
-	public void registerListeners(){
+	private void SetUpModelAndObserver(){
 		addWindowListener(new GameListener());
+		mainMenu = new MainMenu();
+		add(mainMenu);
+		mainMenu.setSize(SCREEN_LENGTH, SCREEN_HEIGHT);
+		
 	}
-	private JButton Play;
 	
-	private class GameListener implements WindowListener, ActionListener{
+	private class GameListener implements WindowListener{
 
 		@Override
 		public void windowOpened(WindowEvent e) {
-			int reply = JOptionPane.showConfirmDialog(null, "Do you want to resume the previous operation?", null, JOptionPane.YES_NO_OPTION);
-			if (reply == JOptionPane.NO_OPTION){
-				game.restart();
-				game.addPlayer(PlayerType.Human,"Player1",Color.BLUE);
-				game.addPlayer(PlayerType.Hard,"HardAI",Color.GREEN);
-				game.addPlayer(PlayerType.Human,"Player2",Color.BLACK);
-				game.addPlayer(PlayerType.Intermediate,"MediumAI",Color.RED);
-				game.addPlayer(PlayerType.Human,"Player3",Color.GRAY);
-				game.addPlayer(PlayerType.Beginner,"EasyAI",Color.MAGENTA);
-				game.randomSetCountry(new RiskMap().getAllCountry());
-			}
-			game.play();
-			
 		}
 
 		@Override
 		public void windowClosing(WindowEvent e) {
+			if(mainMenu.isGaming()){
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to save", null, JOptionPane.YES_NO_CANCEL_OPTION);	
 			if (reply == JOptionPane.YES_OPTION){
 				Save();
@@ -97,6 +62,8 @@ public class GameGUI extends JFrame{
 			}
 			if (reply == JOptionPane.NO_OPTION)
 			System.exit(0);
+			}
+			else System.exit(0);
 		}
 
 		@Override
@@ -128,21 +95,14 @@ public class GameGUI extends JFrame{
 			// TODO Auto-generated method stub
 			
 		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			game.moveToNext();
-			game.play();
-			
-		}
 		
 	}
 	
-	private void Save(){
+	private void Save(){		 
 		try {
 			FileOutputStream fos = new FileOutputStream("myFile");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject((RiskGame) game);	
+			oos.writeObject((RiskGame)mainMenu.getGame());	
 			oos.close();
 			fos.close();
 		} catch (Exception e1) {
@@ -150,17 +110,4 @@ public class GameGUI extends JFrame{
 		}		
 	}
 	
-	private void Load(){
-		game=new RiskGame();
-		try{
-			FileInputStream fos=new FileInputStream("myFile");
-			ObjectInputStream oos = new ObjectInputStream(fos);
-			game=(RiskGame) oos.readObject();
-			oos.close();
-			fos.close();
-		} catch (Exception a){
-		}
-	}
-	
-
 }

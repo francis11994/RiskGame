@@ -17,7 +17,6 @@ public class Run6Bots {
 	}
 	
 	public Run6Bots(){
-		game.setRuntime(0);
 	}
 	public void BeginnerVSIntermediate(){
 		int a = 0;
@@ -25,8 +24,8 @@ public class Run6Bots {
 		int c = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Intermediate, "medium(1)", Color.BLUE);
+			game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -37,8 +36,8 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
+			game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -52,14 +51,14 @@ public class Run6Bots {
 				+ " times\t(2) Medium wins " + a + " times\t\t\t\tthe average round = " + c);
 	}
 
-		public void BeginnerVSHard(){
+	public void BeginnerVSHard(){
 			int a = 0;
 			int b = 0;
 			int c = 0;
 			for (int i = 0; i < 500; i++) {
 				game.restart();
-				game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
-				game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
+				game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
+				game.addPlayer(new HardAI("hard(1)",Color.BLUE));
 				game.randomSetCountry(new RiskMap().getAllCountry());
 				game.play();
 				c += game.getRound();
@@ -70,8 +69,8 @@ public class Run6Bots {
 			}
 			for (int i = 0; i < 500; i++) {
 				game.restart();
-				game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
-				game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
+				game.addPlayer(new HardAI("hard(1)",Color.BLUE));
+				game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
 				game.randomSetCountry(new RiskMap().getAllCountry());
 				game.play();
 				c += game.getRound();
@@ -91,8 +90,8 @@ public class Run6Bots {
 		int c = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
+			game.addPlayer(new HardAI("hard(1)",Color.BLUE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -103,8 +102,8 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
+			game.addPlayer(new HardAI("hard(1)",Color.BLUE));
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			c += game.getRound();
@@ -125,9 +124,9 @@ public class Run6Bots {
 		int d = 0;
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
-			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
+			game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
+			game.addPlayer(new HardAI("hard(1)",Color.BLUE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			d += game.getRound();
@@ -138,9 +137,9 @@ public class Run6Bots {
 		}
 		for (int i = 0; i < 500; i++) {
 			game.restart();
-			game.addPlayer(PlayerType.Hard, "hard(1)",Color.WHITE);
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
-			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
+			game.addPlayer(new HardAI("hard(1)",Color.BLUE));
+			game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 			d += game.getRound();

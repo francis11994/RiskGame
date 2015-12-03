@@ -11,21 +11,24 @@ import org.junit.Test;
 import model.RiskGame;
 import model.RiskMap;
 import model.Run6Bots;
+import model.BeginnerAI;
 import model.Card;
 import model.Card.CardType;
 import model.CardCollection;
 import model.Country;
+import model.HardAI;
+import model.IntermediateAI;
 import model.Player.PlayerType;
 import model.RiskMap.CountryType;
 
 public class GameTest {
 	@Test
 	public void testAI() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 10; i++) {
 			RiskGame game = new RiskGame();
-			game.addPlayer(PlayerType.Beginner, "beginner(1)",Color.BLUE);
-			game.addPlayer(PlayerType.Intermediate, "medium(1)",Color.BLUE);
-			game.addPlayer(PlayerType.Hard, "hard(1)",Color.BLUE);
+			game.addPlayer(new IntermediateAI("medium(1)", Color.BLUE));
+			game.addPlayer(new HardAI("hard(1)",Color.BLUE));
+			game.addPlayer(new BeginnerAI("beginner(1)",Color.WHITE));
 			game.randomSetCountry(new RiskMap().getAllCountry());
 			game.play();
 		}
@@ -36,7 +39,6 @@ public class GameTest {
 		Run6Bots a=new Run6Bots();
 		a.BeginnerVSIntermediate();
 		a.BeginnerVSHard();
-		a.IntermediateVSHard();
 	}
 
 	@Test

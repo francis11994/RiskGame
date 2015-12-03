@@ -15,6 +15,7 @@ public class RiskMap implements Serializable {
 	private Country NORTHERNEUROPE = new Country("Northern Europe",CountryType.EUROPE,557*2/3,217*2/3);
 	private Country WESTERNEUROPE = new Country("Western Europe",CountryType.EUROPE,500*2/3,283*2/3);
 	private Country SOUTHERNEUROPE = new Country("Southern Europe",CountryType.EUROPE,580*2/3,277*2/3);
+	private Country UKRAINE = new Country("Ukraine",CountryType.EUROPE,670*2/3,175*2/3);
 	private Country ALASKA = new Country("Alaska",CountryType.NORTHAMERICA,70*2/3,120*2/3);
 	private Country NORTHWESTTERRITORY = new Country("Northwest Territory",CountryType.NORTHAMERICA,190*2/3,117*2/3);
 	private Country GREENLAND = new Country("Greenland",CountryType.NORTHAMERICA,465*2/3,63*2/3);
@@ -34,7 +35,6 @@ public class RiskMap implements Serializable {
 	private Country CONGO = new Country("Congo",CountryType.AFRICA,585*2/3,490*2/3);
 	private Country SOUTHAFRICA = new Country("South Africa",CountryType.AFRICA,580*2/3,590*2/3);
 	private Country MADAGASCAR = new Country("Madagascar",CountryType.AFRICA,680*2/3,586*2/3);
-	private Country UKRAINE = new Country("Ukraine",CountryType.ASIA,670*2/3,175*2/3);
 	private Country URAL = new Country("Ural",CountryType.ASIA,785*2/3,170*2/3);
 	private Country SIBERIA = new Country("Siberia",CountryType.ASIA,864*2/3,129*2/3);
 	private Country YAKUTSK = new Country("Yakutsk",CountryType.ASIA,980*2/3,115*2/3);
@@ -51,7 +51,8 @@ public class RiskMap implements Serializable {
 	private Country EASTERNAUSTRALIA = new Country("Eastern Australia",CountryType.AUSTRALIA,1040*2/3,567*2/3);
 	private Country WESTERNAUSTRALIA = new Country("Western Australia",CountryType.AUSTRALIA,930*2/3,570*2/3);
 	private Country NEWGUINEA = new Country("New Guinea",CountryType.AUSTRALIA,1055*2/3,490*2/3);
-	
+	private List<CountryType> continents;
+
 	public RiskMap(){
 		map=new ArrayList<Country>();
 		map.add(ICELAND);
@@ -100,33 +101,54 @@ public class RiskMap implements Serializable {
 		uniteTheHood();
 	}
 	
+	public List<CountryType> getCountinent(){
+		return continents;
+	}
 	public int getExtraUnit(List<Country> countries){
+		continents=new ArrayList<CountryType>();
 		int unit = 0;
 		int ASIA = 0 , AFRICA = 0 , AUSTRALIA = 0 , SOUTHAMERICA = 0 , NORTHAMERICA = 0 ,EUROPE = 0 ;
 		for(Country a:countries){
-			if(a.equals(CountryType.AFRICA))
+			if(a.getType().equals(CountryType.AFRICA))
 				AFRICA++;
-			if(a.equals(CountryType.ASIA))
+			if(a.getType().equals(CountryType.ASIA))
 				ASIA++;
-			if(a.equals(CountryType.AUSTRALIA))
+			if(a.getType().equals(CountryType.AUSTRALIA))
 				AUSTRALIA++;
-			if(a.equals(CountryType.SOUTHAMERICA))
+			if(a.getType().equals(CountryType.SOUTHAMERICA))
 				SOUTHAMERICA++;
-			if(a.equals(CountryType.EUROPE))
+			if(a.getType().equals(CountryType.EUROPE)){
+				System.out.println(a.getname());
 				EUROPE++;
+			}
+			if(a.getType().equals(CountryType.NORTHAMERICA))
+				NORTHAMERICA++;
 		}
-		if(AFRICA == 6)
+		if(AFRICA == 6){
+			continents.add(CountryType.AFRICA);
 			unit += 3;
-		if(ASIA == 11)
+		}
+		if(ASIA == 12){
+			continents.add(CountryType.ASIA);
 			ASIA += 7;
-		if(AUSTRALIA ==4)
+		}
+		if(AUSTRALIA ==4){
+			continents.add(CountryType.AUSTRALIA);
 			AUSTRALIA += 2;
-		if(SOUTHAMERICA == 8)
-			unit += 5;
-		if(EUROPE ==7)
+		}
+		if(SOUTHAMERICA == 4){
+			continents.add(CountryType.SOUTHAMERICA);
+			unit += 2;
+		}
+		if(EUROPE ==6){
+			continents.add(CountryType.EUROPE);
+			unit +=3;
+		}
+		if(NORTHAMERICA ==9){
+			continents.add(CountryType.NORTHAMERICA);
 			unit +=5;
-		if(NORTHAMERICA ==4)
-			unit +=2;
+		}
+		System.out.println(EUROPE);
 		return unit;
 	}
 	
@@ -170,6 +192,7 @@ public class RiskMap implements Serializable {
         EASTERNUNITEDSTATES.addNeighbour(QUEBE);
         CENTRALAMERICA.addNeighbour(VENEZUELA);
         CENTRALAMERICA.addNeighbour(WESTERNUNITEDSTATES);
+        CENTRALAMERICA.addNeighbour(EASTERNUNITEDSTATES);
         
         //South America
         VENEZUELA.addNeighbour(CENTRALAMERICA);
@@ -197,6 +220,8 @@ public class RiskMap implements Serializable {
         GREATBRITAIN.addNeighbour(WESTERNEUROPE);
         NORTHERNEUROPE.addNeighbour(SOUTHERNEUROPE);
         NORTHERNEUROPE.addNeighbour(UKRAINE);
+        NORTHERNEUROPE.addNeighbour(GREATBRITAIN);
+        NORTHERNEUROPE.addNeighbour(SCANDINAVIA);
         NORTHERNEUROPE.addNeighbour(WESTERNEUROPE);
         WESTERNEUROPE.addNeighbour(SOUTHERNEUROPE);
         WESTERNEUROPE.addNeighbour(NORTHAFRICA);

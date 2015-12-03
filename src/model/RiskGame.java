@@ -9,6 +9,7 @@ import java.util.Observable;
 import java.util.Random;
 
 import model.Player.PlayerType;
+import model.RiskMap.CountryType;
 
 public class RiskGame extends Observable implements Serializable {
 	private List<List<Country>> world;
@@ -22,8 +23,9 @@ public class RiskGame extends Observable implements Serializable {
 	private Random random = new Random();
 	private Dice dice1 = new Dice();
 	private Dice dice2 = new Dice();
-	public int RunTime = 0;
-	public int  reinforcement;
+	private int RunTime = 0;
+	private int reinforcement = 0;
+
 	public RiskMap map = new RiskMap();
 
 	public RiskGame() {
@@ -36,23 +38,13 @@ public class RiskGame extends Observable implements Serializable {
 		reinforcement = 0;
 	}
 
-	public void addPlayer(PlayerType type, String username, Color color) {
-		if (players.size() < 7) {
-			if (type.equals(PlayerType.Beginner)) {
-				currentPlayer = new BeginnerAI(username, color);
-			} else if (type.equals(PlayerType.Intermediate)) {
-				currentPlayer = new IntermediateAI(username, color);
-			} else if (type.equals(PlayerType.Hard)) {
-				currentPlayer = new HardAI(username, color);
-			} else
-				currentPlayer = new Human(username, color);
-
-			players.add(currentPlayer);
-			country = new ArrayList<Country>();
-			world.add(country);
-			setChanged();
-			notifyObservers(this);
-		}
+	public void addPlayer(Player a) {
+		currentPlayer = a;
+		players.add(currentPlayer);
+		country = new ArrayList<Country>();
+		world.add(country);
+		setChanged();
+		notifyObservers(this);
 	}
 
 	public void randomSetCountry(List<Country> countries) {
@@ -61,7 +53,7 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = 3;		//                (10 - players.size()) * 5;
+		reinforcement = 2; ////////////////////// (10 - players.size()) * 5;
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
@@ -72,27 +64,29 @@ public class RiskGame extends Observable implements Serializable {
 	// sleep
 	public void moveToNext() {
 		index++;
-			if (index >= players.size()) {
-				index = 0;
-				if(round>0)
-					round++;
-				else{
+		if (index >= players.size()) {
+			index = 0;
+			if (round > 0)
+				round++;
+			else {
 				if (reinforcement == 1)
 					round = 1;
 				if (reinforcement > 0)
 					reinforcement--;
-				}
 			}
+		}
 		currentPlayer = players.get(index);
 		country = world.get(index);
-		if(round>0 &&players.size()>1)
-			reinforcement = currentPlayer.getUnit(country);
+		if (round > 0 && players.size() > 1) 
+			reinforcement = currentPlayer.getUnit(country)+map.getExtraUnit(country);
+	
 		setChanged();
 		notifyObservers(this);
 	}
 
 	public void play() {
 		while (!currentPlayer.getType().equals(PlayerType.Human) && players.size() > 1) {
+
 			sleep();
 			if (currentPlayer.getType().equals(PlayerType.Beginner))
 				BeginnerMove();
@@ -113,10 +107,12 @@ public class RiskGame extends Observable implements Serializable {
 			dice2.roll();
 			if (dice1.isWin(dice2)) {
 				defender.removeArmys(1);
-				 System.out.println("rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tdefender lost 1 solider");
+				System.out.println(
+						"rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tdefender lost 1 solider");
 			} else {
 				attacter.removeArmys(1);
-				 System.out.println("rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tattacker lost 1 solider");
+				System.out.println(
+						"rolled " + dice1.getNumber() + " \trolled " + dice2.getNumber() + "\tattacker lost 1 solider");
 			}
 		}
 		if (defender.getArmyCount() == 0) {
@@ -125,8 +121,9 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(defender);
 			attacter.moveSolider(defender, 1);
 			System.out.println("Finally, attacer win and " + attacter.getArmyCount() + " remainning");
-		}
-		else 			System.out.println("Finally, defender win and " + defender.getArmyCount() + " remainning");
+
+		} else
+			System.out.println("Finally, defender win and " + defender.getArmyCount() + " remainning");
 		setChanged();
 		notifyObservers(this);
 		sleep();
@@ -137,8 +134,6 @@ public class RiskGame extends Observable implements Serializable {
 			if (world.get(i).size() == 0)
 				number = i;
 		if (number != -1) {
-			// System.out.println(players.get(number).getName()+" lost
-			// game!");
 			world.remove(number);
 			players.remove(number);
 			if (index > number)
@@ -182,7 +177,7 @@ public class RiskGame extends Observable implements Serializable {
 			int count = 0;
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors(country);
+				List<Country> neighbors = attacter.getEnemyNegibors(country);
 				for (int n = 0; n < neighbors.size(); n++) {
 					Country neighbor = neighbors.get(n);
 					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 3) {
@@ -207,8 +202,8 @@ public class RiskGame extends Observable implements Serializable {
 			sleep();
 		} else if (round > 0) {
 			Country newCountry = country.get(0);
+			currentPlayer.addCards(cards.getCard());
 			while (reinforcement != 0) {
-				currentPlayer.addCards(cards.getCard());
 				currentPlayer.AIsubmitCard();
 				currentPlayer.reinforce(country);
 				reinforcement--;
@@ -216,7 +211,7 @@ public class RiskGame extends Observable implements Serializable {
 			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors(country);
+				List<Country> neighbors = attacter.getEnemyNegibors(country);
 				for (Country neighbor : neighbors) {
 					if (attacter.getArmyCount() > 1) {
 						attact(attacter, neighbor);
@@ -232,12 +227,7 @@ public class RiskGame extends Observable implements Serializable {
 				}
 			}
 			// reinforcement
-			Country LargestArmy = country.get(0);
-			for (Country temp : country) {
-				if (LargestArmy.getArmyCount() < temp.getArmyCount())
-					LargestArmy = temp;
-			}
-			LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
+
 			setChanged();
 			notifyObservers(this);
 			sleep();
@@ -252,8 +242,8 @@ public class RiskGame extends Observable implements Serializable {
 			sleep();
 		} else if (round > 0) {
 			Country newCountry = country.get(0);
+			currentPlayer.addCards(cards.getCard());
 			while (reinforcement != 0) {
-				currentPlayer.addCards(cards.getCard());
 				currentPlayer.AIsubmitCard();
 				currentPlayer.reinforce(country);
 				reinforcement--;
@@ -261,7 +251,7 @@ public class RiskGame extends Observable implements Serializable {
 			}
 			for (int i = 0; i < country.size(); i++) {
 				Country attacter = country.get(i);
-				List<Country> neighbors = attacter.getNegibors(country);
+				List<Country> neighbors = attacter.getEnemyNegibors(country);
 				for (Country neighbor : neighbors) {
 					if (attacter.getArmyCount() > 1) {
 						attact(attacter, neighbor);
@@ -344,6 +334,11 @@ public class RiskGame extends Observable implements Serializable {
 		reinforcement--;
 		setChanged();
 		notifyObservers(this);
-		
+
 	}
+	
+	public RiskMap getMap(){
+		return map;
+	}
+
 }
