@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import model.RiskGame;
 import model.RiskMap;
-import model.Run6Bots;
 import model.BeginnerAI;
 import model.Card;
 import model.Card.CardType;

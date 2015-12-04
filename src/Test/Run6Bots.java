@@ -1,8 +1,13 @@
 
-package model;
+package Test;
 
 import java.awt.Color;
 
+import model.BeginnerAI;
+import model.HardAI;
+import model.IntermediateAI;
+import model.RiskGame;
+import model.RiskMap;
 import model.Player.PlayerType;
 
 public class Run6Bots {

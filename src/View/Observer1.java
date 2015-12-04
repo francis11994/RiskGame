@@ -2,6 +2,7 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,7 +39,7 @@ public class Observer1 extends JPanel implements Observer {
 	List<List<Country>> AllCountry;
 	int index;
 	int round;
-	JButton AttactComplete;
+	JButton AttactComplete,retreat,roll;
 	List<Player> players;
 	Player currentPlayer;
 	RiskGame game;
@@ -48,9 +50,10 @@ public class Observer1 extends JPanel implements Observer {
 	int reinforcement = 0;
 	private BufferedImage map,bottom,gameOver,win;
 	private MouseListener listener;
-	private JPanel numberBar;
-	private Timer timer;
-	private int animation;
+	private JPanel numberBar,attackPanel;
+	private Timer timer,time,wowTimer;
+	private int animation,wowAnimation;
+	private JTextArea attackInformation,attackFrom, attackTo;
 	private TimeListener timeListener;
 
 	public Observer1(RiskGame Game) {
@@ -70,12 +73,51 @@ public class Observer1 extends JPanel implements Observer {
 		AttactComplete.setVisible(false);
 		numberBar = new JPanel();
 		numberBar.setVisible(false);
-		numberBar.setSize(400, 200);
+		numberBar.setSize(450, 200);
 		numberBar.setLocation(200, 200);
 		setNumberBar();
 		add(numberBar);
 		timeListener = new TimeListener(50,0);
 		timer = new Timer(100, timeListener);
+		attackPanel=new JPanel();
+		attackPanel.setSize(450,300);
+		attackPanel.setLocation(200, 150);
+		attackPanel.setLayout(null);
+		attackPanel.setVisible(false);
+		add(attackPanel);
+
+		roll=new JButton("Roll");
+		roll.setSize(90,40);
+		roll.setLocation(330,240);
+		roll.addActionListener(new RollListener());
+		retreat=new JButton("Retreat");
+		retreat.setSize(90,40);
+		retreat.setLocation(200,240);
+		retreat.addActionListener(new RetreatListener());
+		attackInformation=new JTextArea("adawdw\netwefewa\newrfewa");
+		attackInformation.setLocation(120,40);
+		attackInformation.setSize(230,200);
+		attackInformation.setFocusable(false);
+		attackInformation.setBackground(null);
+		attackFrom=new JTextArea("from");
+		attackFrom.setLocation(20,100);
+		attackFrom.setSize(90,200);
+		attackFrom.setFocusable(false);
+		attackFrom.setBackground(null);
+		attackTo=new JTextArea("To");
+		attackTo.setLocation(360,100);
+		attackTo.setSize(90,200);
+		attackTo.setFocusable(false);
+		attackTo.setBackground(null);
+		attackPanel.add(roll);
+		attackPanel.add(retreat);
+		attackPanel.add(attackFrom);
+		attackPanel.add(attackTo);
+		
+		attackPanel.add(attackInformation);
+		wowAnimation=0;
+		wowTimer=new Timer(100,new WowTimerListener());
+		wowTimer.start();
 	}
 
 	private void loadImage() {
@@ -273,6 +315,24 @@ public class Observer1 extends JPanel implements Observer {
 
 			}			
 		}
+		
+		if(wowTimer.isRunning()){
+			g2.setFont(new Font("Consolas", Font.PLAIN, 70));
+			g2.setColor(Color.WHITE);
+			String temp="";
+			if(round==0)
+				temp="Reinforcement";
+			else if(reinforcement>0&&index==0&&round==1)
+				temp="Game Start";
+			else if(reinforcement>0)
+				temp="Reinforcement ";
+			else if(!attackDone)
+				temp="Attacking now";
+			else	temp="Fortification now";
+			g2.drawString(temp, 100, 330 - wowAnimation);
+			
+		}
+		
 		if(AllCountry!=null&&AllCountry.size()==1){
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Consolas", Font.BOLD,120));											
@@ -286,6 +346,10 @@ public class Observer1 extends JPanel implements Observer {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (currentCountry != null) {
+				//TODO 2. Card JPanel
+				//////			Here			/////
+				//////			Here			/////
+				//////			Here			/////
 				// before playing
 				if (round == 0) {
 					currentCountry.addArmys(1);
@@ -293,12 +357,16 @@ public class Observer1 extends JPanel implements Observer {
 					updateUI();
 					game.moveToNext();
 					game.play();
+					if(round>0)
+						wowTimer.start();
 				}
 				// during playing
 				else if (round > 0) {
 					// add soldier
 					if (reinforcement > 0) {
 						game.reinforcement(currentCountry);
+						if(reinforcement==0)
+						wowTimer.start();
 						updateUI();
 					}
 					// attact
@@ -308,16 +376,13 @@ public class Observer1 extends JPanel implements Observer {
 								attacter = currentCountry;
 							else if (attacter == currentCountry)
 								attacter = null;
-							else {
-								game.attact(attacter, currentCountry);
-								if (AllCountry.get(index).contains(currentCountry)) {
-									stop();
-									setNumber(attacter.getArmyCount() - 1);
-									fromCountry(attacter, currentCountry);
-									numberBar.setVisible(true);
-								} else
-									attacter = null;
-
+							else if(!numberBar.isVisible()) {
+								attackFrom.setText("From:\n"+attacter.getname()+"\n\t"+attacter.getArmyCount());
+								attackTo.setText("To: \n"+currentCountry.getname()+"\n\t"+currentCountry.getArmyCount());
+								attackInformation.setText("   Click 'Roll' to begin attacking \n Or click 'Retreat' to give up this attack");
+								attackPanel.setVisible(true);
+								updateUI();
+								stop();
 							}
 						} else {
 							if (MoveCountry == null)
@@ -408,7 +473,8 @@ public class Observer1 extends JPanel implements Observer {
 			if (AttactComplete.getText().equals("Attact Completed")) {
 				attacter = null;
 				attackDone = true;
-				AttactComplete.setText("Rertification Completed");
+				AttactComplete.setText("Rertification Completed");	
+				wowTimer.start();
 			} else {
 				MoveCountry = null;
 				attackDone = false;
@@ -417,6 +483,7 @@ public class Observer1 extends JPanel implements Observer {
 				game.moveToNext();
 				game.play();
 				ShowContinentUnit();
+				wowTimer.start();
 			}
 
 		}
@@ -429,18 +496,23 @@ public class Observer1 extends JPanel implements Observer {
 	int from, to;
 
 	public void setNumberBar() {
-		numberBar.setLayout(new BorderLayout());
+		FlowLayout layout=new FlowLayout();
+		layout.setHgap(50);
+		layout.setVgap(40);
+		numberBar.setLayout(layout);
 		slider = new JSlider(1, 1);
-		numberBar.add(slider, BorderLayout.CENTER);
 		max = new JLabel("To");
 		min = new JLabel("From");
-		str = new JLabel("Player moving units");
-		yes = new JButton("YES");
-		no = new JButton("NO");
-		numberBar.add(min, BorderLayout.WEST);
-		numberBar.add(max, BorderLayout.EAST);
-		numberBar.add(str, BorderLayout.NORTH);
-		numberBar.add(yes, BorderLayout.SOUTH);
+		str = new JLabel("Player moving units from                                     ");
+		yes = new JButton("Yes");
+		no = new JButton("Cancel");
+		no.setSize(500,500);
+		numberBar.add(str);
+		numberBar.add(min);
+		numberBar.add(slider);
+		numberBar.add(max);
+		numberBar.add(yes);
+		numberBar.add(no);
 		// numberBar.add(no,BorderLayout.SOUTH);
 		yes.addActionListener(new yesListener());
 		no.addActionListener(new noListener());
@@ -468,7 +540,7 @@ public class Observer1 extends JPanel implements Observer {
 		to = To.getArmyCount();
 		min.setText("From: " + from);
 		max.setText("To " + to);
-		str.setText("Player moving units from " + From.getname() + " to " + To.getname());
+		str.setText("        "+"Player moving units from " + From.getname() + " to " + To.getname()+"        ");
 		updateUI();
 	}
 
@@ -486,6 +558,7 @@ public class Observer1 extends JPanel implements Observer {
 		public void stateChanged(ChangeEvent e) {
 			min.setText("From " + (from - slider.getValue()));
 			max.setText("To " + (to + slider.getValue()));
+			
 		}
 
 	}
@@ -536,5 +609,81 @@ public class Observer1 extends JPanel implements Observer {
 			updateUI();
 		}
 	}
+	public class RollListener implements ActionListener{
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			attackInformation.setText("");
+			attackFrom.setText("From:\n"+attacter.getname()+"\n"+attacter.getArmyCount());
+			attackTo.setText("To: \n"+currentCountry.getname()+"\n"+currentCountry.getArmyCount());
+			updateUI();
+			time = new Timer(1000,new TimerAttackListener());
+			time.start();
+		}
+		
+	}
+
+	public class TimerAttackListener implements ActionListener{
+		private int count=1;
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(count%4!=0&&!(attacter.getArmyCount()==1||currentCountry.getArmyCount()==0)){
+				count++;
+				attackInformation.setText(attackInformation.getText()+game.attactRoll(attacter,currentCountry));
+				attackFrom.setText("From:\n"+attacter.getname()+"\n"+attacter.getArmyCount());
+				attackTo.setText("To: \n"+currentCountry.getname()+"\n"+currentCountry.getArmyCount());
+			}
+			else {
+				time.stop();
+				if(attacter.getArmyCount()==1){
+					attacter =null;
+					currentCountry=null;
+					attackPanel.setVisible(false);
+					resume();
+				}
+				else if(currentCountry.getArmyCount()==0){
+					attacter.moveSolider(currentCountry, 1);
+					attackPanel.setVisible(false);
+					numberBar.setVisible(true);
+					setNumber(attacter.getArmyCount()-1);
+					fromCountry(attacter,currentCountry);
+				}
+
+			}
+			updateUI();
+			
+		}
+		
+	
+	}
+	public class RetreatListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			currentCountry=null;
+			attackPanel.setVisible(false);
+			resume();
+		}
+	}
+	
+	public class WowTimerListener implements ActionListener{
+		private int count=1;
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(count%25!=0){
+				count++;
+				wowAnimation+=8;
+				updateUI();
+			}
+			else{
+				count++;
+				wowTimer.stop();
+				wowAnimation=0;
+				updateUI();
+			}
+			
+		}
+		
+	}
 }

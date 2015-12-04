@@ -244,6 +244,8 @@ public class RiskMap implements Serializable {
         NORTHAFRICA.addNeighbour(EASTAFRICA);
         NORTHAFRICA.addNeighbour(CONGO);
         NORTHAFRICA.addNeighbour(BRAZIL);
+        EGYPT.addNeighbour(WESTERNEUROPE);
+        EGYPT.addNeighbour(SOUTHERNEUROPE);
         EGYPT.addNeighbour(MIDDLEEAST);
         EGYPT.addNeighbour(EASTAFRICA);
         EGYPT.addNeighbour(NORTHAFRICA);

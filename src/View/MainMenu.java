@@ -48,7 +48,7 @@ public class MainMenu extends JPanel {
 	private MouseOperation mouseListener;
 	private Point currentMouse;
 	private List<Player> players;
-	private BufferedImage background, volumnOpen, volumnMute, menuBackground;
+	private BufferedImage background, volumnOpen, volumnMute, menuBackground,ButtonBackground;
 	private JPanel playerSelection, gameMenu;
 	private JLabel player1, player2, player3, player4, player5, player6;
 	private JComboBox type1, type2, type3, type4, type5, type6;
@@ -75,6 +75,7 @@ public class MainMenu extends JPanel {
 		addMouseMotionListener(mouseListener);
 		addMouseListener(mouseListener);
 		try {
+			ButtonBackground = ImageIO.read(new File("./picture/ButtonBackground.jpg"));
 			background = ImageIO.read(new File("./picture/MenuBackground.jpg"));
 			volumnOpen = ImageIO.read(new File("./picture/VolumnOpen.jpeg"));
 			volumnMute = ImageIO.read(new File("./picture/VolumeMust.png"));
@@ -246,14 +247,14 @@ public class MainMenu extends JPanel {
 						g2.drawString("  Go Back", 520, 480);
 				} else {
 					g2.setColor(Color.WHITE);
-					g2.fillRect(80, 215, 250, 50);
-					g2.fillRect(80, 315, 250, 50);
-					g2.fillRect(80, 415, 250, 50);
+					g2.drawImage(ButtonBackground,65, 205, 240, 70,null);
+					g2.drawImage(ButtonBackground,65, 305, 240, 70,null);
+					g2.drawImage(ButtonBackground,65, 405, 240, 70,null);
 					g2.setColor(Color.BLACK);
 					if (isNewGame(currentMouse))
 						g2.drawString("Click Here", 100, 250);
 					else
-						g2.drawString("Creat New Game", 100, 250);
+						g2.drawString("Creat Game", 100, 250);
 					if (isLoadGame(currentMouse))
 						g2.drawString("Click Here", 100, 350);
 					else
@@ -264,9 +265,8 @@ public class MainMenu extends JPanel {
 						g2.drawString("About", 100, 450);
 				}
 			} else {
-				g2.setColor(Color.WHITE);
-				g2.fillRect(590, 540, 160, 50);
-				g2.fillRect(350, 540, 160, 50);
+				g2.drawImage(ButtonBackground,575, 540, 180, 50,null);
+				g2.drawImage(ButtonBackground,335, 540, 180, 50,null);
 				g2.setFont(new Font("Consolas", Font.PLAIN, 24));
 				g2.setColor(Color.BLACK);
 				if (isStart(currentMouse))
