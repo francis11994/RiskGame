@@ -74,24 +74,28 @@ public abstract class Player implements Serializable {
 		submitedCard = true;
 	}
 
-	public int getCardUnit() {
+	public int getCardUnit2(){
 		int unit = 0;
-		if (submitedCard) {
-			if(cardTimes == 1)
-				unit = 4;
-			else if(cardTimes == 2)
-				unit = 6;
-			else if(cardTimes == 3)
-				unit = 8;
-			else if(cardTimes == 4)
-				unit = 10;
-			else if(cardTimes == 5)
-				unit = 12;
-			else if(cardTimes > 5)
-				unit = cardTimes * 5 - 15;
-			submitedCard = false;
-		}
+		if(cardTimes == 1)
+			unit = 4;
+		else if(cardTimes == 2)
+			unit = 6;
+		else if(cardTimes == 3)
+			unit = 8;
+		else if(cardTimes == 4)
+			unit = 10;
+		else if(cardTimes == 5)
+			unit = 12;
+		else if(cardTimes > 5)
+			unit = cardTimes * 5 - 15;
 		return unit;
+	}
+	public int getCardUnit() {
+		if (submitedCard) {
+			submitedCard = false;
+			return getCardUnit2();
+		}
+		return 0;
 	}
 	
 	public List<Card> getCardsHeld(){

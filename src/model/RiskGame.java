@@ -31,10 +31,13 @@ public class RiskGame extends Observable implements Serializable {
 	private int RunTime = 0;
 	private int reinforcement = 0;
 	private Timer timer;
+	private Card card;
+	private boolean canCard;
 
 	public RiskMap map = new RiskMap();
 
 	public RiskGame() {
+		canCard=false;
 		currentCountry = null;
 		world = new ArrayList<List<Country>>();
 		players = new ArrayList<Player>();
@@ -57,14 +60,21 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = 2; ////////////////////// (10 - players.size()) * 5;
+		reinforcement = (10 - players.size()) * 5;
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);
 	}
 
+	public Card getCard(){
+		return card;
+	}
 	// sleep
 	public void moveToNext() {
+		if(canCard){
+			card=cards.getCard();
+			currentPlayer.addCards(card);
+		}
 		index++;
 		if (index >= players.size()) {
 			index = 0;
@@ -81,8 +91,15 @@ public class RiskGame extends Observable implements Serializable {
 		country = world.get(index);
 		if (round > 0 && players.size() > 1) 
 			reinforcement = currentPlayer.getUnit(country)+map.getExtraUnit(country);
+		canCard=false;
+		
 	}
 
+	public void addCardUnit(){
+		reinforcement+=currentPlayer.getCardUnit();
+		setChanged();
+		notifyObservers(this);
+	}
 	public void play() {
 		if(RunTime!=0){
 			if (currentPlayer.getType().equals(PlayerType.Beginner))
@@ -124,6 +141,7 @@ public class RiskGame extends Observable implements Serializable {
 				attacter.removeArmys(1);
 				temp+="rolled " + dice1.getNumber() + "                          rolled " + dice2.getNumber() + "\n     attacker lost 1 army!\n";
 			}if (defender.getArmyCount() == 0) {
+				canCard=true;
 			for (int i = 0; i < world.size(); i++)
 				world.get(i).remove(defender);
 			world.get(index).add(defender);
@@ -146,8 +164,6 @@ public class RiskGame extends Observable implements Serializable {
 		return temp;
 	}
 
-	
-	
 	
 	public void attact(Country attacter, Country defender) {
 		while (attacter.getArmyCount() > 1 && defender.getArmyCount() > 0) {
@@ -191,8 +207,6 @@ public class RiskGame extends Observable implements Serializable {
 		}
 	}
 	
-	
-
 	private void CheckWinner() {
 		if (round > 99) {
 			for (int i = 0; i < world.size() - 1; i++) {
@@ -223,6 +237,7 @@ public class RiskGame extends Observable implements Serializable {
 			sleep();																						//sleep
 			return;
 		} else if (round > 0) {
+			Country newCountry=country.get(0);
 			if (reinforcement > 0) {
 				currentPlayer.reinforce(country);
 				reinforcement--;
@@ -239,6 +254,7 @@ public class RiskGame extends Observable implements Serializable {
 					if (attacter.getArmyCount() > 1 && !country.contains(neighbor)) {
 						attact(attacter, neighbor);																				//sleep
 						if (!country.contains(neighbor)){
+							newCountry=neighbor;
 							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);																				//sleep
 						}
 						setChanged();
@@ -248,6 +264,12 @@ public class RiskGame extends Observable implements Serializable {
 					}
 				}
 			}
+			Country LargestArmy = country.get(0);
+			for (Country temp : country) {
+				if (LargestArmy.getArmyCount() < temp.getArmyCount())
+					LargestArmy = temp;
+			}
+			LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 		}
 		if (players.size() > 1) {
 		moveToNext();
@@ -258,6 +280,7 @@ public class RiskGame extends Observable implements Serializable {
 			if (round == 0) {
 	 			currentPlayer.reinforce(country);
 	 		} else if (round > 0) {
+	 			Country newCountry=country.get(0);
 	 			while (reinforcement != 0) {
 	 				currentPlayer.reinforce(country);
 	 				reinforcement--;
@@ -270,12 +293,20 @@ public class RiskGame extends Observable implements Serializable {
 	 					Country neighbor = neighbors.get(n);
 	 					if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 3) {
 	 						attact(attacter, neighbor);
-	 						if (!country.contains(neighbor))
+	 						if (!country.contains(neighbor)){
+	 							newCountry=neighbor;
 	 							attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
+	 						}
 	 						count++;
 	 					}
 	 				}
 	 			}
+	 			Country LargestArmy = country.get(0);
+				for (Country temp : country) {
+					if (LargestArmy.getArmyCount() < temp.getArmyCount())
+						LargestArmy = temp;
+				}
+				LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 	 		}
 		}
 	}
@@ -316,6 +347,12 @@ public class RiskGame extends Observable implements Serializable {
 						return;
 					}
 				}
+				Country LargestArmy = country.get(0);
+				for (Country temp : country) {
+					if (LargestArmy.getArmyCount() < temp.getArmyCount())
+						LargestArmy = temp;
+				}
+				LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 			}
 			// reinforcement
 
@@ -330,7 +367,6 @@ public class RiskGame extends Observable implements Serializable {
 	 			currentPlayer.reinforce(country);
 	 		} else if (round > 0) {
 	 			Country newCountry = country.get(0);
- 				currentPlayer.addCards(cards.getCard());
 	 			while (reinforcement != 0) {
 	 				currentPlayer.AIsubmitCard();
 	 				currentPlayer.reinforce(country);
@@ -349,6 +385,12 @@ public class RiskGame extends Observable implements Serializable {
 	 
 	 					}
 	 				}
+	 				Country LargestArmy = country.get(0);
+					for (Country temp : country) {
+						if (LargestArmy.getArmyCount() < temp.getArmyCount())
+							LargestArmy = temp;
+					}
+					LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 	 			}
 	 			// reinforcement
 	 			Country LargestArmy = country.get(0);
@@ -395,6 +437,12 @@ public class RiskGame extends Observable implements Serializable {
 							return;
 						}
 					}
+					Country LargestArmy = country.get(0);
+					for (Country temp : country) {
+						if (LargestArmy.getArmyCount() < temp.getArmyCount())
+							LargestArmy = temp;
+					}
+					LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 				}
 				// reinforcement
 
@@ -409,7 +457,6 @@ public class RiskGame extends Observable implements Serializable {
 		 			currentPlayer.reinforce(country);
 		 		} else if (round > 0) {
 		 			Country newCountry = country.get(0);
-	 				currentPlayer.addCards(cards.getCard());
 		 			while (reinforcement != 0) {
 		 				currentPlayer.AIsubmitCard();
 		 				currentPlayer.reinforce(country);
@@ -428,6 +475,12 @@ public class RiskGame extends Observable implements Serializable {
 		 
 		 					}
 		 				}
+		 				Country LargestArmy = country.get(0);
+						for (Country temp : country) {
+							if (LargestArmy.getArmyCount() < temp.getArmyCount())
+								LargestArmy = temp;
+						}
+						LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 		 			}
 		 			// reinforcement
 		 			Country LargestArmy = country.get(0);

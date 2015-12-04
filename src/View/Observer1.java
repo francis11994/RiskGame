@@ -1,12 +1,11 @@
 package View;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.LayoutManager;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -15,6 +14,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -29,6 +29,8 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import model.Card;
+import model.Card.CardType;
 import model.Country;
 import model.Player;
 import model.Player.PlayerType;
@@ -38,8 +40,12 @@ import model.RiskMap.CountryType;
 public class Observer1 extends JPanel implements Observer {
 	List<List<Country>> AllCountry;
 	int index;
+	JLabel min, max, str;
+	JButton yes, no;
+	JSlider slider;
+	int from, to;
 	int round;
-	JButton AttactComplete,retreat,roll;
+	JButton AttactComplete,retreat,roll,cardTurn,cardTurnCancel;
 	List<Player> players;
 	Player currentPlayer;
 	RiskGame game;
@@ -48,15 +54,18 @@ public class Observer1 extends JPanel implements Observer {
 	Country MoveCountry;
 	boolean attackDone = false;
 	int reinforcement = 0;
-	private BufferedImage map,bottom,gameOver,win;
+	private List<Card> selectedCard;
+	private BufferedImage map,bottom,gameOver,win, cardButton,cardModel,cannon,solider,horseman,cardFrame, redTick;
 	private MouseListener listener;
-	private JPanel numberBar,attackPanel;
+	private JPanel numberBar,attackPanel,cardPanel;
 	private Timer timer,time,wowTimer;
 	private int animation,wowAnimation;
 	private JTextArea attackInformation,attackFrom, attackTo;
 	private TimeListener timeListener;
-
+	private boolean isCard=false;
+	private Point currentPoint;
 	public Observer1(RiskGame Game) {
+		currentPoint=new Point(0,0);
 		loadImage();
 		setLayout(null);
 		game = Game;
@@ -80,7 +89,7 @@ public class Observer1 extends JPanel implements Observer {
 		timeListener = new TimeListener(50,0);
 		timer = new Timer(100, timeListener);
 		attackPanel=new JPanel();
-		attackPanel.setSize(450,300);
+		attackPanel.setSize(450,250);
 		attackPanel.setLocation(200, 150);
 		attackPanel.setLayout(null);
 		attackPanel.setVisible(false);
@@ -88,11 +97,11 @@ public class Observer1 extends JPanel implements Observer {
 
 		roll=new JButton("Roll");
 		roll.setSize(90,40);
-		roll.setLocation(330,240);
+		roll.setLocation(330,190);
 		roll.addActionListener(new RollListener());
 		retreat=new JButton("Retreat");
 		retreat.setSize(90,40);
-		retreat.setLocation(200,240);
+		retreat.setLocation(200,190);
 		retreat.addActionListener(new RetreatListener());
 		attackInformation=new JTextArea("adawdw\netwefewa\newrfewa");
 		attackInformation.setLocation(120,40);
@@ -118,6 +127,20 @@ public class Observer1 extends JPanel implements Observer {
 		wowAnimation=0;
 		wowTimer=new Timer(100,new WowTimerListener());
 		wowTimer.start();
+		
+
+		cardTurn=new JButton("Submit");
+		cardTurnCancel=new JButton("Cancel");
+		cardPanel=new CardPanel();
+		cardPanel.setSize(660,250);
+		cardPanel.setLocation(100,150);
+		cardPanel.setLayout(null);
+		add(cardPanel);
+		cardPanel.setVisible(false);
+		cardTurn.addActionListener(new CanTurnListener());
+		cardTurnCancel.addActionListener(new CardCancelListener());
+		cardPanel.addMouseListener(new ClickCardListener());
+		
 	}
 
 	private void loadImage() {
@@ -125,7 +148,14 @@ public class Observer1 extends JPanel implements Observer {
 			map = ImageIO.read(new File("./picture/RiskMap.PNG"));
 			bottom = ImageIO.read(new File("./picture/Box.jpeg"));
 			gameOver = ImageIO.read(new File("./picture/gameOver.png"));
+			cardButton = ImageIO.read(new File("./picture/CardButton.png"));
 			win = ImageIO.read(new File("./picture/Win.png"));
+			cardModel= ImageIO.read(new File("./picture/CardModel.jpg"));
+			cannon= ImageIO.read(new File("./picture/Cannon.png"));
+			solider= ImageIO.read(new File("./picture/Solider.png"));
+			horseman= ImageIO.read(new File("./picture/Horseman.png"));
+			cardFrame= ImageIO.read(new File("./picture/CardFrame.png"));
+			redTick= ImageIO.read(new File("./picture/RedTick.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,6 +168,10 @@ public class Observer1 extends JPanel implements Observer {
 		players = game.getAllPlayer();
 		currentPlayer = game.getPlayer();
 		reinforcement = game.getReinforcement();
+		if(currentPlayer.getCardsHeld()!=null&&currentPlayer.getCardsHeld().size()==5&&currentPlayer.getType().equals(PlayerType.Human)){
+			cardPanel.setVisible(true);
+			stop();
+		}
 	}
 
 	@Override
@@ -295,15 +329,19 @@ public class Observer1 extends JPanel implements Observer {
 
 		// animation
 		if (timer.isRunning()) {
+			g2.setFont(new Font("Consolas", Font.PLAIN, 35));
+			g2.setColor(Color.RED);
+			if(isCard){
+				g2.drawString("+ "+currentPlayer.getCardUnit2()+" unit (Card)", 0, 280 - animation);
+			}
+			else{
 			List<CountryType> temp = game.getMap().getCountinent();
 			// extra continents unit
 			if (temp != null && temp.size() > 0) {
-				g2.setFont(new Font("Consolas", Font.PLAIN, 30));
-				g2.setColor(Color.WHITE);
 				if (temp.contains(CountryType.NORTHAMERICA))
 					g2.drawString("+ 5 extra unit", 30, 180 - animation);
 				if (temp.contains(CountryType.SOUTHAMERICA))
-					g2.drawString("+ 2 extra unit", 60, 390 - animation);
+					g2.drawString("+ 2 extra unit", 70, 390 - animation);
 				if (temp.contains(CountryType.ASIA))
 					g2.drawString("+ 7 extra unit", 520, 200 - animation);
 				if (temp.contains(CountryType.AFRICA))
@@ -313,7 +351,7 @@ public class Observer1 extends JPanel implements Observer {
 				if (temp.contains(CountryType.EUROPE))
 					g2.drawString("+ 3 extra unit", 300, 180 - animation);
 
-			}			
+			}		}	
 		}
 		
 		if(wowTimer.isRunning()){
@@ -339,17 +377,35 @@ public class Observer1 extends JPanel implements Observer {
 			g2.drawString(currentPlayer.getName(),200,150);
 			g2.drawImage(win, 200, 160, 500,250,null);
 		}
+		
+		if(currentPlayer.getType().equals(PlayerType.Human)){
+			if(isAtCard(currentPoint))
+			g2.drawImage(cardButton,0,320,140,140,null);
+			else g2.drawImage(cardButton,0,330,120,120,null);
+			
+		}
+	}
+	
+	public boolean isAtCard(Point a){
+		return a.getX()>0 &&a.getX()<120&&a.getY()>330&&a.getY()<450;
 	}
 
 	private class MouseOperation implements MouseListener, MouseMotionListener, ActionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			if(isAtCard(currentPoint)&&!attackPanel.isVisible()&&!numberBar.isVisible()){
+			if(cardPanel.isVisible()){
+				cardPanel.setVisible(false);
+				resume();
+			}
+			else {
+				selectedCard=new ArrayList<Card>();
+				cardPanel.setVisible(true);
+			stop();
+			}
+			}
 			if (currentCountry != null) {
-				//TODO 2. Card JPanel
-				//////			Here			/////
-				//////			Here			/////
-				//////			Here			/////
 				// before playing
 				if (round == 0) {
 					currentCountry.addArmys(1);
@@ -432,6 +488,7 @@ public class Observer1 extends JPanel implements Observer {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			currentPoint=e.getPoint();
 			if (currentCountry != null && !currentCountry.isLocateAt(e.getPoint()))
 				currentCountry = null;
 			if (AllCountry.size() >1) {
@@ -490,11 +547,6 @@ public class Observer1 extends JPanel implements Observer {
 
 	}
 
-	JLabel min, max, str;
-	JButton yes, no;
-	JSlider slider;
-	int from, to;
-
 	public void setNumberBar() {
 		FlowLayout layout=new FlowLayout();
 		layout.setHgap(50);
@@ -522,10 +574,12 @@ public class Observer1 extends JPanel implements Observer {
 
 	public void stop() {
 		removeMouseMotionListener((MouseMotionListener) listener);
+		removeMouseListener(listener);
 	}
 
 	public void resume() {
 		addMouseMotionListener((MouseMotionListener) listener);
+		addMouseListener(listener);
 	}
 
 	public void setNumber(int a) {
@@ -548,7 +602,7 @@ public class Observer1 extends JPanel implements Observer {
 		if (timer != null)
 			timer.stop();
 		timeListener = new TimeListener(50,0);
-		timer = new Timer(100, timeListener);
+		timer = new Timer(80, timeListener);
 		timer.start();
 	}
 
@@ -585,7 +639,7 @@ public class Observer1 extends JPanel implements Observer {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			numberBar.setVisible(false);
-			addMouseMotionListener((MouseMotionListener) listener);
+			resume();
 		}
 
 	}
@@ -605,6 +659,7 @@ public class Observer1 extends JPanel implements Observer {
 				animation += 2;
 			} else {
 				timer.stop();
+				isCard=false;
 			}
 			updateUI();
 		}
@@ -641,7 +696,7 @@ public class Observer1 extends JPanel implements Observer {
 					attackPanel.setVisible(false);
 					resume();
 				}
-				else if(currentCountry.getArmyCount()==0){
+				else if(currentCountry!=null&&currentCountry.getArmyCount()==0){
 					attacter.moveSolider(currentCountry, 1);
 					attackPanel.setVisible(false);
 					numberBar.setVisible(true);
@@ -686,4 +741,176 @@ public class Observer1 extends JPanel implements Observer {
 		}
 		
 	}
+
+	public class CanTurnListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(selectedCard!=null&&selectedCard.size()==3)
+				if(selectedCard.get(0).CanTurnIn(selectedCard.get(1), selectedCard.get(2))){
+					currentPlayer.submitCard(selectedCard.get(0), selectedCard.get(1), selectedCard.get(2));
+					cardPanel.setVisible(false);
+					game.addCardUnit();
+					resume();
+					isCard=true;
+					ShowContinentUnit();
+				}
+			
+			
+		}
+		
+	}
+	
+	public class CardCancelListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(currentPlayer.getCardsHeld()!=null&&currentPlayer.getCardsHeld().size()<5){
+			cardPanel.setVisible(false);
+			resume();
+			}
+		}
+		
+	}
+	
+	public class CardPanel extends JPanel{
+		public CardPanel(){
+			cardTurn.setSize(80,40);
+			cardTurnCancel.setSize(80,40);
+			cardTurn.setLocation(300,190);
+			cardTurnCancel.setLocation(400,190);
+			add(cardTurn);
+			add(cardTurnCancel);
+		}
+		
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.drawImage(cardFrame, 0,0,660,250,null);
+			if(currentPlayer.getCardsHeld()!=null&&currentPlayer.getCardsHeld().size()>0){
+				//draw card1
+				g2.drawImage(cardModel,40,30,100,160,null);
+				drawCard(g2,0);
+				if(currentPlayer.getCardsHeld().size()>1){
+					//draw card2
+					g2.drawImage(cardModel,160,30,100,160,null);
+					drawCard(g2,1);
+					if(currentPlayer.getCardsHeld().size()>2){
+						//draw card3
+						g2.drawImage(cardModel,280,30,100,160,null);
+						drawCard(g2,2);
+						if(currentPlayer.getCardsHeld().size()>3){
+							//draw card4
+							g2.drawImage(cardModel,400,30,100,160,null);
+							drawCard(g2,3);
+							if(currentPlayer.getCardsHeld().size()>4){
+								//draw card5
+								g2.drawImage(cardModel,520,30,100,160,null);
+								drawCard(g2,4);
+
+							}}}}
+					}
+			for(Card temp:selectedCard){
+						int a=currentPlayer.getCardsHeld().indexOf(temp);
+					g2.drawImage(redTick,40+120*a,30,100,160,null);
+				}
+			}
+	}
+	
+	public void drawCard(Graphics2D g2,int i){
+		Card temp=currentPlayer.getCardsHeld().get(i);
+		BufferedImage a;
+		if(temp.getType().equals(CardType.Soldier)){
+			a=solider;
+		}
+		else if(temp.getType().equals(CardType.Horseman)){
+			a=horseman;
+		}
+		else if(temp.getType().equals(CardType.Cannon)){
+			a=cannon;
+		}
+		else a=cardButton;
+		g2.drawImage(a, 50+120*i, 50, 70, 70, null);
+		g2.setFont(new Font("Consolas", Font.BOLD,20));			
+		g2.drawString(currentPlayer.getCardsHeld().get(i).getType().toString(), 50+120*i,160);
+	}
+	public boolean isLocatedCard1(Point a){
+		return 40<a.getX()&&a.getX()<140&&30<a.getY()&&a.getY()<190;
+	}
+	public boolean isLocatedCard2(Point a){
+		return 160<a.getX()&&a.getX()<260&&30<a.getY()&&a.getY()<190;
+	}
+	public boolean isLocatedCard3(Point a){
+		return 280<a.getX()&&a.getX()<380&&30<a.getY()&&a.getY()<190;
+	}
+	public boolean isLocatedCard4(Point a){
+		return 400<a.getX()&&a.getX()<500&&30<a.getY()&&a.getY()<190;
+	}
+	public boolean isLocatedCard5(Point a){
+		return 520<a.getX()&&a.getX()<620&&30<a.getY()&&a.getY()<190;
+	}
+	
+	public class ClickCardListener implements MouseListener{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(isLocatedCard1(e.getPoint()))
+				if(currentPlayer.getCardsHeld()!=null &&currentPlayer.getCardsHeld().size()>0){
+					if(selectedCard.contains(currentPlayer.getCardsHeld().get(0)))
+						selectedCard.remove(currentPlayer.getCardsHeld().get(0));
+					else selectedCard.add(currentPlayer.getCardsHeld().get(0));
+				}
+			if(isLocatedCard2(e.getPoint()))
+				if(currentPlayer.getCardsHeld()!=null &&currentPlayer.getCardsHeld().size()>1){
+					if(selectedCard.contains(currentPlayer.getCardsHeld().get(1)))
+						selectedCard.remove(currentPlayer.getCardsHeld().get(1));
+					else selectedCard.add(currentPlayer.getCardsHeld().get(1));
+				}
+			if(isLocatedCard3(e.getPoint()))
+				if(currentPlayer.getCardsHeld()!=null &&currentPlayer.getCardsHeld().size()>2){
+					if(selectedCard.contains(currentPlayer.getCardsHeld().get(2)))
+						selectedCard.remove(currentPlayer.getCardsHeld().get(2));
+					else selectedCard.add(currentPlayer.getCardsHeld().get(2));
+				}
+			if(isLocatedCard4(e.getPoint()))
+				if(currentPlayer.getCardsHeld()!=null &&currentPlayer.getCardsHeld().size()>3){
+					if(selectedCard.contains(currentPlayer.getCardsHeld().get(3)))
+						selectedCard.remove(currentPlayer.getCardsHeld().get(3));
+					else selectedCard.add(currentPlayer.getCardsHeld().get(3));
+				}
+			if(isLocatedCard5(e.getPoint()))
+				if(currentPlayer.getCardsHeld()!=null &&currentPlayer.getCardsHeld().size()>4){
+					if(selectedCard.contains(currentPlayer.getCardsHeld().get(4)))
+						selectedCard.remove(currentPlayer.getCardsHeld().get(4));
+					else selectedCard.add(currentPlayer.getCardsHeld().get(4));
+				}
+			updateUI();
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+		
 }

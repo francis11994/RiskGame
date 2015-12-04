@@ -138,7 +138,7 @@ public class RiskMap implements Serializable {
 			continents.add(CountryType.SOUTHAMERICA);
 			unit += 2;
 		}
-		if(EUROPE ==6){
+		if(EUROPE ==7){
 			continents.add(CountryType.EUROPE);
 			unit +=3;
 		}

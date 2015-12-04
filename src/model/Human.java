@@ -16,7 +16,7 @@ public class Human extends Player {
 
 	@Override
 	public int getUnit(List<Country> countries) {
-		int total = getCardUnit() + countries.size() / 3;
+		int total = countries.size() / 3;
 		if (total < 3)
 			total = 3;
 		return total;
