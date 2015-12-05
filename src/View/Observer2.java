@@ -22,50 +22,51 @@ import javax.swing.JPanel;
 import model.Player;
 import model.RiskGame;
 
-public class Observer2 extends JPanel implements Observer{
+public class Observer2 extends JPanel implements Observer {
 	private List<Player> players;
 	private Player currentPlayer;
 	private Point now;
 	private BufferedImage boardOne, boardTwo;
-	public Observer2(RiskGame game){
+
+	public Observer2(RiskGame game) {
 		setLayout(null);
 		setFont(new Font("Arial Black", Font.BOLD, 20));
-		players=game.getAllPlayer();
+		players = game.getAllPlayer();
 		currentPlayer = game.getPlayer();
 		loadImage();
 	}
-	
-	private void loadImage(){
+
+	private void loadImage() {
 		try {
 			BufferedImage board = ImageIO.read(new File("./picture/PlayerBoard.png"));
 			boardOne = board.getSubimage(400, 255, 145, 80);
-			boardTwo = board.getSubimage(135, 100, 165,80);
+			boardTwo = board.getSubimage(135, 100, 165, 80);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void update(Observable o, Object arg) {
 		currentPlayer = ((RiskGame) o).getPlayer();
 		updateUI();
 	}
-	
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		if(players.size()>0){
-			int Length = (GameGUI.SCREEN_LENGTH -50) / players.size();
+		if (players.size() > 0) {
+			int Length = (GameGUI.SCREEN_LENGTH - 50) / players.size();
 			int index = 0;
-			for(Player a:players){
-				if(a==currentPlayer)
-					g2.drawImage(boardOne, 25+index * Length, 0, Length, 50, null);
+			for (Player a : players) {
+				if (a == currentPlayer)
+					g2.drawImage(boardOne, 25 + index * Length, 0, Length, 50, null);
 				g2.setColor(a.getColor());
-				g2.drawString(a.getName(), 25+Length *index + 15, 35);
+				g2.drawString(a.getName(), 25 + Length * index + 15, 35);
 				index++;
 			}
 		}
 	}
-	
+
 }

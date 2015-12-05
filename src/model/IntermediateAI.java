@@ -25,17 +25,14 @@ public class IntermediateAI extends Player {
 	}
 
 	@Override
-	public void reinforce( List<Country> countries) {
-		for(int i=0;i<countries.size();i++)
+	public void reinforce(List<Country> countries) {
+		for (int i = 0; i < countries.size(); i++)
 			if (countries.get(i).isThreaten(countries)) {
 				countries.get(i).addArmys(1);
 				return;
 			}
 		Random random = new Random();
 		countries.get(random.nextInt(countries.size())).addArmys(1);
-		}
-		
-	
-	
+	}
 
 }

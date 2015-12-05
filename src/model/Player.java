@@ -64,7 +64,7 @@ public abstract class Player implements Serializable {
 	public Color getColor() {
 		return color;
 	}
-	
+
 	public void submitCard(Card card1, Card card2, Card card3) {
 		cardsHeld.remove(card1);
 		cardsHeld.remove(card2);
@@ -73,22 +73,23 @@ public abstract class Player implements Serializable {
 		submitedCard = true;
 	}
 
-	public int getCardUnit2(){
+	public int getCardUnit2() {
 		int unit = 0;
-		if(cardTimes == 1)
+		if (cardTimes == 1)
 			unit = 4;
-		else if(cardTimes == 2)
+		else if (cardTimes == 2)
 			unit = 6;
-		else if(cardTimes == 3)
+		else if (cardTimes == 3)
 			unit = 8;
-		else if(cardTimes == 4)
+		else if (cardTimes == 4)
 			unit = 10;
-		else if(cardTimes == 5)
+		else if (cardTimes == 5)
 			unit = 12;
-		else if(cardTimes > 5)
+		else if (cardTimes > 5)
 			unit = cardTimes * 5 - 15;
 		return unit;
 	}
+
 	public int getCardUnit() {
 		if (submitedCard) {
 			submitedCard = false;
@@ -96,10 +97,11 @@ public abstract class Player implements Serializable {
 		}
 		return 0;
 	}
-	
-	public List<Card> getCardsHeld(){
+
+	public List<Card> getCardsHeld() {
 		return cardsHeld;
 	}
+
 	public abstract PlayerType getType();
 
 	public abstract int getUnit(List<Country> countries);

@@ -25,20 +25,20 @@ public class SongPlayer {
 	 * @param audioFileName
 	 *            The name of the file to be written to your output device.
 	 */
-		public static void playFile(final EndOfSongListener waiter, final String audioFileName) {
-			javax.swing.SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+	public static void playFile(final EndOfSongListener waiter, final String audioFileName) {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
 
-					Thread player = new AudioFilePlayer(audioFileName);
+				Thread player = new AudioFilePlayer(audioFileName);
 
-					((AudioFilePlayer) player).addEndOfSongListener(waiter);
+				((AudioFilePlayer) player).addEndOfSongListener(waiter);
 
-					// AudioFilePlayer extends Thread. When start is called,
-					// the overridden run method in AudioFilePlayer executes.
-					// If the song is not played in a separate thread, your GUI
-					// stops working
-					player.start();
-				}
-			});
+				// AudioFilePlayer extends Thread. When start is called,
+				// the overridden run method in AudioFilePlayer executes.
+				// If the song is not played in a separate thread, your GUI
+				// stops working
+				player.start();
+			}
+		});
 	}
 }

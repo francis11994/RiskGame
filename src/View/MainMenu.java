@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
+import SongPlayer.AudioFilePlayer;
 import SongPlayer.SongPlayer;
 import model.BeginnerAI;
 import model.HardAI;
@@ -41,10 +42,8 @@ import model.IntermediateAI;
 import model.Player;
 import model.RiskGame;
 import model.RiskMap;
-import sun.audio.AudioData;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-import sun.audio.ContinuousAudioDataStream;
+
+import sun.audio.*;
 
 public class MainMenu extends JPanel {
 	private RiskGame game;
@@ -54,7 +53,7 @@ public class MainMenu extends JPanel {
 	private MouseOperation mouseListener;
 	private Point currentMouse;
 	private List<Player> players;
-	private BufferedImage background, volumnOpen, volumnMute, menuBackground,ButtonBackground;
+	private BufferedImage background, volumnOpen, volumnMute, menuBackground, ButtonBackground;
 	private JPanel playerSelection, gameMenu;
 	private JLabel player1, player2, player3, player4, player5, player6;
 	private JComboBox type1, type2, type3, type4, type5, type6;
@@ -66,9 +65,9 @@ public class MainMenu extends JPanel {
 	static boolean isSounding = true;
 	private AudioPlayer MGP = AudioPlayer.player;
 	private AudioStream BGM;
-	
+
 	private ContinuousAudioDataStream loop = null;
-	
+
 	public MainMenu() {
 		runTime = 300;
 
@@ -78,16 +77,16 @@ public class MainMenu extends JPanel {
 		setLayout(null);
 		SetUpModelAndButtons();
 		repaint();
-		
-		try{
+
+		try {
 			InputStream test = new FileInputStream("./songfiles/starcraft (1).wav");
 			BGM = new AudioStream(test);
 			AudioPlayer.player.start(BGM);
-		}catch(Exception error){
+		} catch (Exception error) {
 			error.printStackTrace();
 		}
 		MGP.start(loop);
-		
+
 	}
 
 	public void SetUpModelAndButtons() {
@@ -267,9 +266,9 @@ public class MainMenu extends JPanel {
 						g2.drawString("  Go Back", 520, 480);
 				} else {
 					g2.setColor(Color.WHITE);
-					g2.drawImage(ButtonBackground,65, 205, 240, 70,null);
-					g2.drawImage(ButtonBackground,65, 305, 240, 70,null);
-					g2.drawImage(ButtonBackground,65, 405, 240, 70,null);
+					g2.drawImage(ButtonBackground, 65, 205, 240, 70, null);
+					g2.drawImage(ButtonBackground, 65, 305, 240, 70, null);
+					g2.drawImage(ButtonBackground, 65, 405, 240, 70, null);
 					g2.setColor(Color.BLACK);
 					if (isNewGame(currentMouse))
 						g2.drawString("Click Here", 100, 250);
@@ -285,8 +284,8 @@ public class MainMenu extends JPanel {
 						g2.drawString("About", 100, 450);
 				}
 			} else {
-				g2.drawImage(ButtonBackground,575, 540, 180, 50,null);
-				g2.drawImage(ButtonBackground,335, 540, 180, 50,null);
+				g2.drawImage(ButtonBackground, 575, 540, 180, 50, null);
+				g2.drawImage(ButtonBackground, 335, 540, 180, 50, null);
 				g2.setFont(new Font("Consolas", Font.PLAIN, 24));
 				g2.setColor(Color.BLACK);
 				if (isStart(currentMouse))
@@ -454,40 +453,44 @@ public class MainMenu extends JPanel {
 		}
 	}
 
-	public boolean isB(Point a){
+	public boolean isB(Point a) {
 		return (310 < a.getX() && a.getX() < 395) && (380 < a.getY() && a.getY() < 400);
 	}
-	public boolean isC(Point a){
+
+	public boolean isC(Point a) {
 		return (450 < a.getX() && a.getX() < 550) && (370 < a.getY() && a.getY() < 400);
 	}
-	public boolean isD(Point a){
+
+	public boolean isD(Point a) {
 		return (185 < a.getX() && a.getX() < 265) && (415 < a.getY() && a.getY() < 436);
 	}
-	public boolean isE(Point a){
+
+	public boolean isE(Point a) {
 		return (318 < a.getX() && a.getX() < 408) && (414 < a.getY() && a.getY() < 442);
 	}
-	public boolean isF(Point a){
+
+	public boolean isF(Point a) {
 		return (460 < a.getX() && a.getX() < 550) && (415 < a.getY() && a.getY() < 435);
 	}
-	
-	public void cleanRunTime(){
+
+	public void cleanRunTime() {
 		b.setBorder(null);
 		c.setBorder(null);
 		d.setBorder(null);
 		e.setBorder(null);
 		f.setBorder(null);
 	}
+
 	public class MouseOperation implements MouseMotionListener, MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e1) {
-			
+
 			if (isSound(currentMouse)) {
-				if (isSounding){
+				if (isSounding) {
 					isSounding = false;
 					AudioPlayer.player.stop(BGM);
-				}
-				else{
+				} else {
 					isSounding = true;
 					AudioPlayer.player.start(BGM);
 				}
@@ -496,25 +499,25 @@ public class MainMenu extends JPanel {
 			if (game == null && isNewGame(currentMouse) && !about.isVisible()) {
 				game = new RiskGame();
 				playerSelection.setVisible(true);
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/newGame.wav");
 				}
 			}
-			if (game == null && isLoadGame(currentMouse) && !about.isVisible()){
+			if (game == null && isLoadGame(currentMouse) && !about.isVisible()) {
 				loadGame();
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/loadGame.wav");
 				}
 			}
 			if (game == null && isAbout(currentMouse) && !about.isVisible()) {
 				about.setVisible(true);
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/about.wav");
 				}
 			}
 			if (game == null && isBackFromAbout(currentMouse) && about.isVisible()) {
 				about.setVisible(false);
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/goBack.wav");
 				}
 			}
@@ -528,7 +531,7 @@ public class MainMenu extends JPanel {
 						game.addPlayer(a);
 					game.randomSetCountry(new RiskMap().getAllCountry());
 					GameBegin();
-					if(isSounding){
+					if (isSounding) {
 						SongPlayer.playFile(null, "./songfiles/letsStart.wav");
 					}
 				}
@@ -536,34 +539,34 @@ public class MainMenu extends JPanel {
 			if (game != null && isBack(currentMouse)) {
 				game = null;
 				playerSelection.setVisible(false);
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/goBack.wav");
 				}
 			}
 			if (game != null && isB(currentMouse)) {
 				cleanRunTime();
 				b.setBorder(border);
-				runTime=300;
+				runTime = 300;
 			}
 			if (game != null && isC(currentMouse)) {
 				cleanRunTime();
 				c.setBorder(border);
-				runTime=500;
+				runTime = 500;
 			}
 			if (game != null && isD(currentMouse)) {
 				cleanRunTime();
 				d.setBorder(border);
-				runTime=1000;
+				runTime = 1000;
 			}
 			if (game != null && isE(currentMouse)) {
 				cleanRunTime();
 				e.setBorder(border);
-				runTime=1500;
+				runTime = 1500;
 			}
 			if (game != null && isF(currentMouse)) {
 				cleanRunTime();
 				f.setBorder(border);
-				runTime=2500;
+				runTime = 2500;
 			}
 			updateUI();
 		}
@@ -610,13 +613,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type1.getSelectedIndex() != 0){
+			if (type1.getSelectedIndex() != 0) {
 				name1.setText("Michael ");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
 				}
-			}
-			else
+			} else
 				name1.setText("        ");
 		}
 
@@ -626,13 +628,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type2.getSelectedIndex() != 0){
+			if (type2.getSelectedIndex() != 0) {
 				name2.setText("Chris   ");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
-				}	
-			}
-			else
+				}
+			} else
 				name2.setText("        ");
 		}
 
@@ -642,13 +643,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type3.getSelectedIndex() != 0){
+			if (type3.getSelectedIndex() != 0) {
 				name3.setText("Calamusa");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
-				}	
-			}
-			else
+				}
+			} else
 				name3.setText("        ");
 		}
 
@@ -658,13 +658,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type4.getSelectedIndex() != 0){
+			if (type4.getSelectedIndex() != 0) {
 				name4.setText("Baird   ");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
-				}	
-			}
-			else
+				}
+			} else
 				name4.setText("        ");
 		}
 
@@ -674,13 +673,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type5.getSelectedIndex() != 0){
+			if (type5.getSelectedIndex() != 0) {
 				name5.setText("Freier  ");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
-				}	
-			}
-			else
+				}
+			} else
 				name5.setText("        ");
 		}
 
@@ -690,13 +688,12 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (type6.getSelectedIndex() != 0){
+			if (type6.getSelectedIndex() != 0) {
 				name6.setText("Sprindys");
-				if(isSounding){
+				if (isSounding) {
 					SongPlayer.playFile(null, "./songfiles/createPlayer.wav");
-				}	
-			}
-			else
+				}
+			} else
 				name6.setText("        ");
 		}
 
@@ -706,7 +703,7 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(MainMenu.isSounding){
+			if (MainMenu.isSounding) {
 				SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 			}
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to restart?", null, JOptionPane.YES_NO_OPTION);
@@ -728,13 +725,13 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(MainMenu.isSounding){
+			if (MainMenu.isSounding) {
 				SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 			}
 			int reply = JOptionPane.showConfirmDialog(null, "Do you want to save", null, JOptionPane.YES_NO_OPTION);
 			if (reply == JOptionPane.YES_OPTION) {
 				try {
-					if(MainMenu.isSounding){
+					if (MainMenu.isSounding) {
 						SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 					}
 					FileOutputStream fos = new FileOutputStream("myFile");
@@ -754,7 +751,7 @@ public class MainMenu extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			gameMenu.setVisible(false);
-			if(MainMenu.isSounding){
+			if (MainMenu.isSounding) {
 				SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 			}
 			observer1.resume();
@@ -766,7 +763,7 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(MainMenu.isSounding){
+			if (MainMenu.isSounding) {
 				SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 			}
 			RiskGame temp = new RiskGame();
@@ -799,7 +796,7 @@ public class MainMenu extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			if (isSounding) {
 				isSounding = false;
 				sound.setText("Sound: OFF");
@@ -807,7 +804,7 @@ public class MainMenu extends JPanel {
 			} else {
 				isSounding = true;
 				sound.setText("Sound: ON");
-				if(MainMenu.isSounding){
+				if (MainMenu.isSounding) {
 					AudioPlayer.player.start(BGM);
 				}
 			}
@@ -820,7 +817,7 @@ public class MainMenu extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!gameMenu.isVisible()) {
-				if(MainMenu.isSounding){
+				if (MainMenu.isSounding) {
 					SongPlayer.playFile(null, "./songfiles/clickButton.wav");
 				}
 				gameMenu.setVisible(true);

@@ -50,25 +50,26 @@ public class Country implements Serializable {
 				enemy.add(a);
 		return enemy;
 	}
-	
-	public List<Country> getCanMoveCountry(List<Country> countries){
-		List<Country> list= new ArrayList<Country>();
+
+	public List<Country> getCanMoveCountry(List<Country> countries) {
+		List<Country> list = new ArrayList<Country>();
 		addCanMoveCountry(countries, list, this);
 		list.remove(this);
 		return list;
 	}
-	
-	public void addCanMoveCountry(List<Country> a, List<Country> list, Country country){
-		for(Country temp: country.getNeighbour())
-			if(a.contains(temp)&&!list.contains(temp)){
+
+	public void addCanMoveCountry(List<Country> a, List<Country> list, Country country) {
+		for (Country temp : country.getNeighbour())
+			if (a.contains(temp) && !list.contains(temp)) {
 				list.add(temp);
 				addCanMoveCountry(a, list, temp);
 			}
 	}
 
-	public List<Country> getNeighbour(){
+	public List<Country> getNeighbour() {
 		return neighbours;
 	}
+
 	public void addNeighbour(Country c) {
 		this.neighbours.add(c);
 	}
