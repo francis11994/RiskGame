@@ -1,25 +1,26 @@
+
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Dice {
+public class Dice implements Serializable{
+	private Random random=new Random();
+	private int number = 0;
 	
-	private Random random;
-	private int number;
-	public Dice(){
-		random = new Random();
+	public int getNumber(){
+		return number;
 	}
 	
-	public int getRandomNumber(){
-		number = random.nextInt(6);
-		return number+1;
+	public void roll(){
+		number=random.nextInt(6)+1;
 	}
 	
-	public boolean compareDiceWith(Dice defenser){
-		if(this.getRandomNumber() > defenser.getRandomNumber()){
-			return true; //win offenser
+	public boolean isWin(Dice defenser){
+		if(number > defenser.getNumber()){
+			return true; 
 		}else{
-			return false; //win defenser
+			return false; 
 		}
 	}
 }

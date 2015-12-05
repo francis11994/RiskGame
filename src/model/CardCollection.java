@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import model.Card.CardType;
 
-public class CardCollection {
+public class CardCollection implements Serializable{
 	private List<Card>   cards;
 	private Card card01=new Card(CardType.Cannon, "Iceland");
 	private Card card02=new Card(CardType.Cannon, "Scandinavia");
@@ -115,7 +116,7 @@ public class CardCollection {
 		}
 		
 		public Card getCard(){
-			if(cards==null)
+			if(cards.size()==0)
 			shuffle();
 			Random random=new Random();
 			return cards.remove(random.nextInt(cards.size()));

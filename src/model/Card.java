@@ -1,15 +1,16 @@
 
 package model;
-//update
-public class Card {
+
+import java.io.Serializable;
+
+public class Card implements Serializable{
 	public enum CardType {
 		Soldier, Horseman, Cannon, Wild;
 		
 	}
 	
 	private CardType type;
-	private String country;
-	
+	private String country;;
 	public Card(CardType a, String b){
 		type = a;
 		country = b;
@@ -18,11 +19,10 @@ public class Card {
 	public CardType getType() {
 		return type;
 	}
-
-	public String getCountry() {
+	
+	public String getCountry(){
 		return country;
 	}
-	
 	public boolean CanTurnIn(Card card2, Card card3){
 		boolean a=sameType(card2, card3);
 		boolean b=oneOfEach(card2, card3);
