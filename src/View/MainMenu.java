@@ -170,14 +170,14 @@ public class MainMenu extends JPanel {
 		add(playerSelection);
 
 		about = new JTextArea("Game Name:\tRisk Game\nTeamates:\tDaniel Green, Kim Francis, Chen Zhao\n"
-				+ "\n\tRisk Game is a fascinating game of stragetegy in which"
+				+ "\n\tRisk Game is a fascinating game of strategy in which"
 				+ "\na player can conquer the world. Click 'Create New Game to "
 				+ "\nplay a new Game. Click 'Load Game to load previous game. "
 				+ "\nAt the beginning of the game, you will be randomly assigned"
 				+ "\nsome countries. Your main goal is to conquer all of the"
 				+ "\ncountries. set army on your coutries and attact their"
 				+ "\ncountries and move soldier to other countries. You can"
-				+ "\ntrun in 3 same or differnet cards when you set your army. ");
+				+ "\nturn in 3 same or differnet cards when you set your army. ");
 		about.setFont(new Font("Consolas", Font.PLAIN, 16));
 		about.setSize(560, 350);
 		about.setLocation(160, 100);
