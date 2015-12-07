@@ -18,7 +18,7 @@ public class IntermediateAI extends Player {
 	@Override
 	public int getUnit(List<Country> countries) {
 		int card = getCardUnit();
-		int total = card + countries.size() / 3;
+		int total = card + countries.size() / 4;
 		if (total < 3)
 			total = 3;
 		return total;

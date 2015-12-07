@@ -20,9 +20,9 @@ public class BeginnerAI extends Player {
 	@Override
 	public int getUnit(List<Country> countries) {
 		int card = getCardUnit();
-		int total = card + countries.size() * 2 / 7;
+		int total = card + countries.size() / 5;
 		if (total < 3)
-			total = 3;
+			total = 2;
 		return total;
 	}
 

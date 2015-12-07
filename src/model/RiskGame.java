@@ -32,6 +32,7 @@ public class RiskGame extends Observable implements Serializable {
 	private Timer timer;
 	private Card card;
 	private boolean canCard;
+	private boolean some=false;
 
 	public RiskMap map = new RiskMap();
 
@@ -167,32 +168,23 @@ public class RiskGame extends Observable implements Serializable {
 	}
 
 	public void attact(Country attacter, Country defender) {
+		some=false;
 		while (attacter.getArmyCount() > 1 && defender.getArmyCount() > 0) {
 			dice1.roll();
 			dice2.roll();
 			if (dice1.isWin(dice2)) {
 				defender.removeArmys(1);
-				// System.out.println(
-				// "rolled " + dice1.getNumber() + " \trolled " +
-				// dice2.getNumber() + "\tdefender lost 1 solider");
 			} else {
-				attacter.removeArmys(1);
-				// System.out.println(
-				// "rolled " + dice1.getNumber() + " \trolled " +
-				// dice2.getNumber() + "\tattacker lost 1 solider");
-			}
+				attacter.removeArmys(1);			}
 		}
 		if (defender.getArmyCount() == 0) {
+			some=true;
 			for (int i = 0; i < world.size(); i++)
 				world.get(i).remove(defender);
 			world.get(index).add(defender);
 			attacter.moveSolider(defender, 1);
-			// System.out.println("Finally, attacer win and " +
-			// attacter.getArmyCount() + " remainning");
 
 		} else
-			// System.out.println("Finally, defender win and " +
-			// defender.getArmyCount() + " remainning");
 			setChanged();
 		notifyObservers(this);
 
@@ -213,7 +205,7 @@ public class RiskGame extends Observable implements Serializable {
 	}
 
 	private void CheckWinner() {
-		if (round > 99) {
+		if (round > 40) {
 			for (int i = 0; i < world.size() - 1; i++) {
 				if (world.get(i).size() < world.get(i + 1).size()) {
 					world.get(i + 1).addAll(world.get(i));
@@ -251,14 +243,15 @@ public class RiskGame extends Observable implements Serializable {
 					sleep(); // sleep
 					return;
 				}
+				if(world.get(index).size()>5){
 				for (int i = 0; i < country.size(); i++) {
 					Country attacter = country.get(i);
 					List<Country> neighbors = attacter.getEnemyNegibors(country);
 					for (int n = 0; n < neighbors.size(); n++) {
 						Country neighbor = neighbors.get(n);
 						if (attacter.getArmyCount() > 1 && !country.contains(neighbor)) {
-							attact(attacter, neighbor); // sleep
-							if (!country.contains(neighbor)) {
+							attact(attacter, neighbor); 
+							if (some) {
 								newCountry = neighbor;
 								attacter.moveSolider(neighbor, attacter.getArmyCount() / 2); // sleep
 							}
@@ -269,13 +262,13 @@ public class RiskGame extends Observable implements Serializable {
 						}
 					}
 				}
-				Country LargestArmy = country.get(0);
-				for (Country temp : country) {
-					if (LargestArmy.getArmyCount() < temp.getArmyCount())
-						LargestArmy = temp;
-				}
-				LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
-			}
+						Country LargestArmy = country.get(0);
+						for (Country temp : country) {
+							if (LargestArmy.getArmyCount() < temp.getArmyCount())
+								LargestArmy = temp;
+						}
+						LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);	
+				}}
 			if (players.size() > 1) {
 				moveToNext();
 				play();
@@ -295,9 +288,9 @@ public class RiskGame extends Observable implements Serializable {
 					List<Country> neighbors = attacter.getEnemyNegibors(country);
 					for (int n = 0; n < neighbors.size(); n++) {
 						Country neighbor = neighbors.get(n);
-						if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 3) {
+						if (attacter.getArmyCount() > 1 && !country.contains(neighbor) && count < 2) {
 							attact(attacter, neighbor);
-							if (!country.contains(neighbor)) {
+							if (country.contains(neighbor)) {
 								newCountry = neighbor;
 								attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
 							}
@@ -305,12 +298,14 @@ public class RiskGame extends Observable implements Serializable {
 						}
 					}
 				}
+				if(world.get(index).size()>5){
 				Country LargestArmy = country.get(0);
 				for (Country temp : country) {
 					if (LargestArmy.getArmyCount() < temp.getArmyCount())
 						LargestArmy = temp;
 				}
 				LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
+						}
 			}
 		}
 	}
@@ -335,13 +330,14 @@ public class RiskGame extends Observable implements Serializable {
 					sleep(); // sleep
 					return;
 				}
+				if(world.get(index).size()>5){
 				for (int i = 0; i < country.size(); i++) {
 					Country attacter = country.get(i);
 					List<Country> neighbors = attacter.getEnemyNegibors(country);
 					for (Country neighbor : neighbors) {
 						if (attacter.getArmyCount() > 1) {
 							attact(attacter, neighbor);
-							if (country.contains(neighbor)) {
+							if (some) {
 								newCountry = neighbor;
 								attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
 							}
@@ -351,15 +347,14 @@ public class RiskGame extends Observable implements Serializable {
 							return;
 						}
 					}
-					Country LargestArmy = country.get(0);
-					for (Country temp : country) {
-						if (LargestArmy.getArmyCount() < temp.getArmyCount())
-							LargestArmy = temp;
-					}
-					LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
-				}
+						Country LargestArmy = country.get(0);
+						for (Country temp : country) 
+							if (LargestArmy.getArmyCount() < temp.getArmyCount())
+								LargestArmy = temp;
+						LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);				
 				// reinforcement
-
+			}
+				}
 				if (players.size() > 1) {
 					moveToNext();
 					play();
@@ -375,6 +370,7 @@ public class RiskGame extends Observable implements Serializable {
 					currentPlayer.reinforce(country);
 					reinforcement--;
 				}
+				if(world.get(index).size()>5){
 				for (int i = 0; i < country.size(); i++) {
 					Country attacter = country.get(i);
 					List<Country> neighbors = attacter.getEnemyNegibors(country);
@@ -382,26 +378,22 @@ public class RiskGame extends Observable implements Serializable {
 						if (attacter.getArmyCount() > 1) {
 							attact(attacter, neighbor);
 							if (country.contains(neighbor)) {
+								
 								newCountry = neighbor;
 								attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
 							}
 
 						}
 					}
+				// reinforcement
 					Country LargestArmy = country.get(0);
 					for (Country temp : country) {
 						if (LargestArmy.getArmyCount() < temp.getArmyCount())
 							LargestArmy = temp;
 					}
 					LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
-				}
-				// reinforcement
-				Country LargestArmy = country.get(0);
-				for (Country temp : country) {
-					if (LargestArmy.getArmyCount() < temp.getArmyCount())
-						LargestArmy = temp;
-				}
-				LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
+									}
+			}
 			}
 		}
 	}
@@ -424,13 +416,14 @@ public class RiskGame extends Observable implements Serializable {
 					sleep(); // sleep
 					return;
 				}
+				if(world.get(index).size()>5){
 				for (int i = 0; i < country.size(); i++) {
 					Country attacter = country.get(i);
 					List<Country> neighbors = attacter.getEnemyNegibors(country);
 					for (Country neighbor : neighbors) {
 						if (attacter.getArmyCount() > 1) {
 							attact(attacter, neighbor);
-							if (country.contains(neighbor)) {
+							if (some) {
 								newCountry = neighbor;
 								attacter.moveSolider(neighbor, attacter.getArmyCount() / 2);
 							}
@@ -440,19 +433,18 @@ public class RiskGame extends Observable implements Serializable {
 							return;
 						}
 					}
+				}
 					Country LargestArmy = country.get(0);
-					for (Country temp : country) {
+					for (Country temp : country) 
 						if (LargestArmy.getArmyCount() < temp.getArmyCount())
 							LargestArmy = temp;
-					}
 					LargestArmy.moveSolider(newCountry, LargestArmy.getArmyCount() - 1);
 				}
 				// reinforcement
-
+		}
 				if (players.size() > 1) {
 					moveToNext();
 					play();
-				}
 			}
 		} else {
 			if (round == 0) {
