@@ -673,6 +673,7 @@ public class Observer1 extends JPanel implements Observer {
 				if (MainMenu.isSounding) {
 					SongPlayer.playFile(null, "./songfiles/moveSoldier.wav");
 				}
+				if(attacter!=null&&currentCountry!=null&&slider!=null)
 				attacter.moveSolider(currentCountry, slider.getValue());
 				attacter = null;
 			}
