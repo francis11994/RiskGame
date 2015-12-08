@@ -22,7 +22,7 @@ public class BeginnerAI extends Player {
 		int card = getCardUnit();
 		int total = card + countries.size() / 5;
 		if (total < 3)
-			total = 2;
+			total = 3;
 		return total;
 	}
 

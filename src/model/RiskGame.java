@@ -60,7 +60,7 @@ public class RiskGame extends Observable implements Serializable {
 			world.get(index).add(countries.remove(i));
 			moveToNext();
 		}
-		reinforcement = 2 + players.size();
+		reinforcement = (8-players.size())*5;
 		index = 0;
 		currentPlayer = players.get(0);
 		country = world.get(0);

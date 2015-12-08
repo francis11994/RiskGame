@@ -17,7 +17,7 @@ public class HardAI extends Player {
 
 	@Override
 	public int getUnit(List<Country> countries) {
-		int total = getCardUnit() + countries.size() * 3;
+		int total = getCardUnit() + countries.size() / 3;
 		if (total < 4)
 			total = 4;
 		return total;
